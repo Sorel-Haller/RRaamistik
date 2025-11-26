@@ -6,6 +6,7 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 use Inertia\Inertia; 
 use App\Models\Author;
+
 class PostController extends Controller
 {
     public function index()
@@ -17,29 +18,32 @@ class PostController extends Controller
 
     public function create()
     {
-        
         return Inertia::render('posts/Create', [
-            'authors' => Author::all()->mapWithKeys(fn($author) => [$author->id => $author->first_name . ' ' . $author->last_name]),
-        ]); 
+            'authors' => Author::all()->mapWithKeys(fn($author) => [
+                $author->id => $author->first_name . ' ' . $author->last_name
+            ]),
+        ]);
     }
 
     public function store(Request $request)
     {
-        Post::create($request ->validate([
+        $data = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'author' => 'required|string|max:100',
+            'author_id' => 'required|integer|exists:authors,id',
             'published' => 'boolean',
-        ]));
-        return redirect()->route('posts.index');
+        ]);
 
-        
+        Post::create($data);
+
+        return redirect()->route('posts.index');
     }
 
     public function show(Post $post)
     {
+        //dd($post->loadMissing('author')->toArray());
         return Inertia::render('posts/View', [
-            'post' => $post,
+            'post' => $post -> loadMissing('author'),
         ]);
     }
 
@@ -52,12 +56,15 @@ class PostController extends Controller
 
     public function update(Request $request, Post $post)
     {
-        $post->update($request->validate([
+        $data = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'author' => 'required|string|max:100',
+            'author_id' => 'required|integer|exists:authors,id',
             'published' => 'boolean',
-        ]));
+        ]);
+
+        $post->update($data);
+
         return redirect()->route('posts.index')->with('success', 'Post updated successfully.');
     }
 
@@ -65,8 +72,6 @@ class PostController extends Controller
     {
         $post->delete();
 
-    return redirect()->back()->with('success', 'Postitus kustutatud.');
+        return redirect()->back()->with('success', 'Postitus kustutatud.');
     }
-
-    
 }

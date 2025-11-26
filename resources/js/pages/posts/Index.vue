@@ -48,7 +48,7 @@ interface PaginatedResponse {
   total: number;
 }
 
-type Post = {
+export type Post = {
   id: number;
   title: string;
   content: string;

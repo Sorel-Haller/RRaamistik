@@ -36,63 +36,23 @@ const statusClasses = computed(() =>
 <template>
   <Head :title="props.post.title" />
 
-  <AppLayout :breadcrumbs="breadcrumbs">
-    <div class="flex h-full flex-col gap-6 overflow-x-auto rounded-xl p-6">
-      <div class="flex flex-col gap-4 rounded-xl border border-border/60 bg-muted/40 p-6 shadow-sm">
-        <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <h1 class="text-3xl font-semibold tracking-tight">{{ props.post.title }}</h1>
-            <p class="text-sm text-muted-foreground">
-              Written by <span class="font-medium text-foreground">{{ props.post.author }}</span>
-            </p>
-          </div>
+<AppLayout :breadcrumbs="breadcrumbs">
+  <div class="flex flex-col gap-6 p-6 h-full">
+    <!-- Post Header -->
+    <header class="rounded-xl bg-muted/40 p-6 shadow-sm">
+      <h1 class="text-3xl font-semibold tracking-tight">{{ props.post.title }}</h1>
+    </header>
 
-          <div class="flex flex-wrap items-center gap-3">
-            <span class="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium" :class="statusClasses">
-              {{ statusLabel }}
-            </span>
-
-            <Button as-child variant="outline">
-              <Link :href="edit.url(props.post.id)">Edit Post</Link>
-            </Button>
-
-            <Button as-child variant="ghost">
-              <Link :href="index().url">Back to Posts</Link>
-            </Button>
-          </div>
-        </div>
-
-        <dl class="grid gap-4 rounded-lg border border-border/40 bg-background p-4 sm:grid-cols-3">
-          <div>
-            <dt class="text-xs uppercase tracking-wide text-muted-foreground">Created</dt>
-            <dd class="text-sm text-foreground">
-              <div>{{ props.post.created_at_formatted }}</div>
-              <div class="text-xs text-muted-foreground">{{ props.post.created_at }}</div>
-            </dd>
-          </div>
-
-          <div>
-            <dt class="text-xs uppercase tracking-wide text-muted-foreground">Last updated</dt>
-            <dd class="text-sm text-foreground">
-              <div>{{ props.post.updated_at_formatted }}</div>
-              <div class="text-xs text-muted-foreground">{{ props.post.updated_at }}</div>
-            </dd>
-          </div>
-
-          <div>
-            <dt class="text-xs uppercase tracking-wide text-muted-foreground">Post ID</dt>
-            <dd class="text-sm text-foreground">#{{ props.post.id }}</dd>
-          </div>
-        </dl>
+    <!-- Post Content -->
+    <section class="rounded-xl border border-border/60 bg-background p-6 shadow-sm">
+      <h2 class="mb-4 text-lg font-semibold text-foreground">Content</h2>
+      <div class="prose max-w-none text-sm leading-relaxed text-foreground/90 dark:prose-invert">
+        <p class="whitespace-pre-line">{{ props.post.content }}</p>
       </div>
+    </section>
+  </div>
+</AppLayout>
 
-      <section class="rounded-xl border border-border/60 bg-background p-6 shadow-sm">
-        <h2 class="mb-4 text-lg font-semibold text-foreground">Content</h2>
-        <div class="prose max-w-none text-sm leading-relaxed text-foreground/90 dark:prose-invert">
-          <p class="whitespace-pre-line">{{ props.post.content }}</p>
-        </div>
-      </section>
-    </div>
-  </AppLayout>
+
 </template>
 
