@@ -13,6 +13,7 @@ const props = defineProps<{
     content: string;
     author: string;
     published: boolean;
+    comments_count: number;
     created_at: string;
     updated_at: string;
     created_at_formatted: string;
@@ -50,9 +51,12 @@ const statusClasses = computed(() =>
         <p class="whitespace-pre-line">{{ props.post.content }}</p>
       </div>
     </section>
+    <section>
+      <Link :href="edit.url(props.post.id)">
+        <Button>Edit Post</Button>
+      </Link>
+    </section>
   </div>
 </AppLayout>
-
-
 </template>
 
