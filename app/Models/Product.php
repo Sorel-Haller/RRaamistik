@@ -2,25 +2,26 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Testing\Fluent\Concerns\Has;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Models\Comment;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
-class Post extends Model
+class Product extends Model
 {
-
     use HasFactory;
-
+    
     protected $fillable = [
-        'title',
-        'content',
-        'author_id',
-        'published',
+        'name',
+        'description',
+        'price',
+        'sku',
+        'stock_quantity',
     ];   
+
+    protected $casts = [
+        'price' => 'decimal:2',
+    ];
 
    protected $appends = [
     'created_at_formatted',
@@ -40,15 +41,11 @@ class Post extends Model
        return Attribute::make(
             get: fn() => $this->updated_at?->diffForHumans()
         );
+    } 
+    
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
     }
 
-    public function author(): BelongsTo
-    {
-        return $this->belongsTo(Author::class, 'author_id');
-    }
-    
-    public function comments(): HasMany
-    {
-        return $this->hasMany(Comment::class);
-    }
 }
