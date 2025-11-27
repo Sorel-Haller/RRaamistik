@@ -27,6 +27,13 @@ Route::get('/dashboard', DashboardController::class)
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+Route::middleware('auth', 'verified')->group(function () {
+    Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::resource('posts', PostController::class);
+    Route::resource('authors', PostController::class);
+    Route::post('/add-comment/{post}', [CommentsController::class, 'store'])->name('comments.add');
+});
+
 // Posts routes
 Route::prefix('posts')->group(function () {
 
@@ -38,6 +45,7 @@ Route::prefix('posts')->group(function () {
     Route::get('/{post}/comments', [CommentsController::class, 'index'])->name('posts.comments.index');
     Route::post('/{post}/comments', [CommentsController::class, 'store'])->name('posts.comments.store');
 });
+
 
 // Include additional route files
 require __DIR__.'/settings.php';

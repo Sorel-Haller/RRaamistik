@@ -36,6 +36,7 @@ const statusClasses = computed(() =>
     ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
     : 'bg-slate-100 text-slate-600 border border-slate-200',
 );
+
 </script>
 
 <template>
@@ -54,6 +55,8 @@ const statusClasses = computed(() =>
 
               <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">
                 {{ props.post.title }}
+                <p class="text-sm text-muted-foreground mt-2">{{ props.post.author }}</p>
+
               </h1>
 
               <p class="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
@@ -121,6 +124,7 @@ const statusClasses = computed(() =>
             </p>
           </article>
         </section>
+
       </div>
     </div>
   </AppLayout>

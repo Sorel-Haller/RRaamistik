@@ -5,10 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Traits\HasFormattedDate;
 
 class Comment extends Model
 {
     use HasFactory;
+    use HasFormattedDate;
+
+    protected $guarded = [];
+
+    protected $appends = [
+        'created_at_formatted',
+        'updated_at_formatted',
+    ];
 
     protected $fillable = [
         'user_id',
