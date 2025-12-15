@@ -10,7 +10,7 @@ hosts:
     hostname: 'ta24haller.itmajakas.ee'
     http_user: virt137756
     remote_user: virt137756
-    deploy_path: '~/domeenid/www.ta24haller.itmajakas.ee/tvk'
+    deploy_path: '~/domeenid/www.ta24haller.itmajakas.ee/raamistikud'
 
 
 tasks:
