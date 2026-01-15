@@ -41,22 +41,21 @@ class TimetableNotification extends Command
 
         $data = $response->json();
 
-        $entries = collect();
+        $entries = [];
 
-        $date = Carbon::parse($dateVariable)->locale('et');
-                dd($date->format('d.m.Y'), $date->dayName);
+        foreach (data_get($data, 'content', []) as $item) {
+            $date = Carbon::parse(data_get($item, 'from'))->locale('et');
+            $dayName = $date-dayName;
 
-        $entries = collect(data_get($data, 'content', []))
-            ->map(function ($item) {
-                $date = Carbon::parse(data_get($item, 'from'));
-                return [
-                    'name' => data_get($item, 'studentGroupName', 'Unknown Group'),
-                    'date' => $date->toDateString(),
-                    'day' => $date->translatedFormat('l'),
-                    'subject' => data_get($item, 'subject', 'Unknown Subject'),
-                    'description' => data_get($item, 'description', ''),
-                ];
-            });
+            
+            $entries[] = [
+                'name' => data_get($item, 'nameEt'),
+                'start' => data_get($item, 'timeStart'),
+                'end' => data_get($item, 'timeEnd'),
+                'date' => $date->toDateString('d F Y'),
+                'room' => data_get($item, 'rooms.0.roomCode'),
+            ];
+        }
 
         dd($entries);
     } 
