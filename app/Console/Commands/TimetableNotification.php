@@ -42,9 +42,13 @@ class TimetableNotification extends Command
         $data = $response->json();
         $entries = [];
 
-        foreach (data_get($data, 'content', []) as $item) {
-            $date = Carbon::parse(data_get($item, 'from'))->locale('et');
+        foreach ($content as $entry) {
+            $date = Carbon::parse(data_get($entry, 'date'))->locale('et');
             $dayName = $date->dayName;
+
+            $entries[$dayName][] = [
+                'name' => data_get($entry, 'nameEt'),
+            ];
 
             if (! array_key_exists($dayName, $entries)) {
                 $entries[$dayName] = [
@@ -53,7 +57,7 @@ class TimetableNotification extends Command
                 ];
             }
 
-            $entries[$dayName]['entries'] [] = [
+            $entries[$dayName]['entries'][] = [
                 'name' => data_get($item, 'nameEt'),
                 'start' => data_get($item, 'timeStart'),
                 'end' => data_get($item, 'timeEnd'),
