@@ -62,6 +62,15 @@ class TimetableNotification extends Command
             ];
         }
 
+        $entries = [] = {
+            'day' => 'Reede'
+            'entries'
+        }
+
+        foreach($content as $item) {
+            dd($item);
+        }
+
         dd($entries);
     } 
 }
