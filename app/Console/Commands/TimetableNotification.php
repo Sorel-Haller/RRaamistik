@@ -40,7 +40,7 @@ class TimetableNotification extends Command
         ]);
 
         $data = $response->json();
-
+        $content = data_get($data, 'content', []);
         $entries = [];
 
         foreach (data_get($data, 'content', []) as $item) {
@@ -62,9 +62,6 @@ class TimetableNotification extends Command
             ];
         }
 
-        foreach($content as $item) {
-            dd($item);
-        }
 
         dd($entries);
     } 
