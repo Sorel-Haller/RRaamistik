@@ -48,7 +48,14 @@ class TimetableNotification extends Command
 
             $entries[$dayName][] = [
                 'name' => data_get($entry, 'nameEt'),
+                'start' => data_get($entry, 'timeStart'),
+                'end' => data_get($entry, 'timeEnd'),
+                'room' => data_get($entry, 'rooms.0.roomCode'),
             ];
+        
+        foreach ($content as $item) {
+            $date = Carbon::parse(data_get($item, 'date'))->locale('et');
+            $dayName = $date->dayName;
 
             if (! array_key_exists($dayName, $entries)) {
                 $entries[$dayName] = [
