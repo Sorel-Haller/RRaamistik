@@ -45,14 +45,19 @@ class TimetableNotification extends Command
 
         foreach (data_get($data, 'content', []) as $item) {
             $date = Carbon::parse(data_get($item, 'from'))->locale('et');
-            $dayName = $date-dayName;
+            $dayName = $date->dayName;
 
-            
+            if (! array_key_exists($dayName, $entries)) {
+                $entries[$dayName] = [
+                    'date' => $date->toDateString('d F Y'),
+                    'day' => [$dayName],
+                ];
+            }
+
             $entries[] = [
                 'name' => data_get($item, 'nameEt'),
                 'start' => data_get($item, 'timeStart'),
                 'end' => data_get($item, 'timeEnd'),
-                'date' => $date->toDateString('d F Y'),
                 'room' => data_get($item, 'rooms.0.roomCode'),
             ];
         }
