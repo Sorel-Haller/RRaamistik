@@ -47,11 +47,13 @@ class TimetableNotification extends Command
             $date = Carbon::parse(data_get($entry, 'date'))->locale('et');
             $dayName = $date->dayName;
 
+        if(!array_key_exists($dayName, $entries)) {
             $entries[$dayName]=[
                 'date' => $date->toDateString('d F Y'),
                 'day' => [$dayName],
                 
-            ];
+            ];            
+        }   
 
             $entries[$dayName][] = [
                 'name' => data_get($entry, 'nameEt'),
