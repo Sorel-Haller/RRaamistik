@@ -53,7 +53,7 @@ class TimetableNotification extends Command
                 ];
             }
 
-            $entries[] = [
+            $entries[$dayName]['entries'] [] = [
                 'name' => data_get($item, 'nameEt'),
                 'start' => data_get($item, 'timeStart'),
                 'end' => data_get($item, 'timeEnd'),
