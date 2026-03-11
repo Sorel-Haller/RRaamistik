@@ -54,6 +54,10 @@ class Timetable extends Mailable
         );
     }
 
+    public function build()
+    {
+        return $this->markdown('emails.timetable');
+    }
     /**
      * Get the attachments for the message.
      *

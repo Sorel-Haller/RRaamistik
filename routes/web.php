@@ -3,6 +3,9 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentsController;
+use App\Mail\Timetable;
+use Illuminate\Support\Collection;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -56,4 +59,25 @@ require __DIR__.'/authors.php';
 // Test route (can be removed later)
 Route::get('/test', function () {
     return 'tere';
+});
+
+Route::get('/mailable', function () {
+
+    $startDate = Carbon::now();
+    $endDate = Carbon::now()->addWeek();
+
+    $timetableEvents = collect([
+        [
+            'title' => 'Math lesson',
+            'date' => '2026-03-12',
+            'time' => '10:00'
+        ],
+        [
+            'title' => 'Science lesson',
+            'date' => '2026-03-13',
+            'time' => '12:00'
+        ]
+    ]);
+
+    return new Timetable($timetableEvents, $startDate, $endDate);
 });
