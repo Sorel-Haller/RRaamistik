@@ -19,7 +19,7 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function() {
 
 
-    Route::get('dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
+    Route::get('dashboard', DashboardController::class)->name('dashboard');
 
     
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');

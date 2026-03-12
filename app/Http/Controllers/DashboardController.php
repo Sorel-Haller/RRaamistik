@@ -16,7 +16,7 @@ class DashboardController extends Controller
     {
 
 
-        $value = Cache::remember('weather', now()->addHour(), function () {
+        $value = Cache::remember('weather_v2', now()->addHour(), function () {
             $response = Http::get('https://api.openweathermap.org/data/2.5/weather', [
                 'q' => 'Tallinn',
                 'appid' => config('services.weather.key'),
