@@ -11,6 +11,9 @@ import { request } from '@/routes/password';
 import { store } from '@/actions/App/Http/Controllers/Auth/AuthenticatedSessionController';
 import { Head, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
+import { googleLogin } from '@/routes';
+import GoogleLogo from '@/components/GoogleLogo.vue';
+
 
 defineProps<{
     status?: string;
@@ -79,6 +82,11 @@ const submit = () => {
                 <Button type="submit" class="mt-4 w-full" :tabindex="4" :disabled="form.processing">
                     <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
                     Log in
+                </Button>
+                <Button variant="secondary" as="a" :href="googleLogin().url" type="button" class="mt-2 w-full" tabindex="5" :disabled="processing">
+                    <LoaderCircle v-if="processing" class="h-4 w-4 animate-spin" />
+                    Sign in with Google
+                    <GoogleLogo/>
                 </Button>
             </div>
             <div class="text-center text-sm">

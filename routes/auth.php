@@ -1,5 +1,5 @@
 <?php
-
+use App\Models\User;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Socialite;
 
 Route::middleware('guest')->group(function () {
@@ -41,8 +42,19 @@ Route::middleware('guest')->group(function () {
     })->name('google-login');
     
     Route::get('/auth/callback', function () {
-        $user = Socialite::driver('google')->user();
-        dd($user);
+        $googleUser = Socialite::driver('google')->user();
+        $user = User::updateOrCreate([
+                'google_id' => $googleUser->id,
+            ], [
+                'name' => $googleUser->name,
+                'email' => $googleUser->email,
+                'google_token' => $googleUser->token,
+                'google_refresh_token' => $googleUser->refreshToken,
+            ]);
+        
+            Auth::login($user);
+        
+            return redirect('/dashboard');
     });
 });
 

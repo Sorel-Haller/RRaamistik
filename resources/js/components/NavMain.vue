@@ -23,6 +23,7 @@ const page = usePage();
                     </Link>
                 </SidebarMenuButton>
             </SidebarMenuItem>
+
         </SidebarMenu>
     </SidebarGroup>
 </template>

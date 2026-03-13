@@ -4,11 +4,13 @@ import { dashboard } from '@/routes';
 import { WeatherData, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import PlaceholderPattern from '../components/PlaceholderPattern.vue';
+import MapView from '@/components/MapView.vue';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
         href: dashboard().url,
     },
+
 ];
 defineProps<{
     weather?: WeatherData;
@@ -40,8 +42,9 @@ defineProps<{
                 </div>
             </div>
             <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
-                <PlaceholderPattern />
+                <MapView/>
             </div>
+
         </div>
     </AppLayout>
 </template>

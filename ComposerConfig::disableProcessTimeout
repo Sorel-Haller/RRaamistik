@@ -12,7 +12,7 @@
 [logs]                                                Use -v|-vv to show more details  
 [vite] 8:51:23 AM [vite] (client) info: Types generated for actions, routes, form variants
 [vite]   Plugin: @laravel/vite-plugin-wayfinder
-[server]   Failed to listen on 127.0.0.1:8000 (reason: Address already in use)
+[server]   Failed to listen on 127.0.0.1:8001 (reason: Address already in use)
 [vite] Port 5173 is in use, trying another one...
 [vite] 
 [vite]   VITE v7.1.11  ready in 520 ms
@@ -22,7 +22,7 @@
 [vite] 
 [vite]   LARAVEL v12.27.1  plugin v2.0.1
 [vite] 
-[vite]   ➜  APP_URL: http://localhost:8000
+[vite]   ➜  APP_URL: http://localhost:8001
 [server] 
 [server]    INFO  Server running on [http://127.0.0.1:8001].  
 [server] 

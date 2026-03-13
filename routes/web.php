@@ -27,6 +27,7 @@ Route::middleware(['auth', 'verified'])->group(function() {
 
     
     Route::post('/add-comment/{post}', [CommentController::class, 'store'])->name('comments.add');
+
 });
 
 
