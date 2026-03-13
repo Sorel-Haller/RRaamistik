@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import RegisteredUserController from '@/actions/App/Http/Controllers/Auth/RegisteredUserController';
+import GoogleLogo from '@/components/GoogleLogo.vue';
 import InputError from '@/components/InputError.vue';
 import TextLink from '@/components/TextLink.vue';
 import { Button } from '@/components/ui/button';
@@ -57,6 +58,11 @@ import { LoaderCircle } from 'lucide-vue-next';
                 <Button type="submit" class="mt-2 w-full" tabindex="5" :disabled="processing">
                     <LoaderCircle v-if="processing" class="h-4 w-4 animate-spin" />
                     Create account
+                </Button>
+                <Button type="button" class="mt-2 w-full" tabindex="5" :disabled="processing">
+                    <LoaderCircle v-if="processing" class="h-4 w-4 animate-spin" />
+                    Sign in with Google
+                    <GoogleLogo/>
                 </Button>
             </div>
 
