@@ -3,6 +3,8 @@
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\WeatherController;
+use App\Http\Controllers\MarkerController;
 use App\Mail\Timetable;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Http;
@@ -21,6 +23,10 @@ Route::middleware(['auth', 'verified'])->group(function() {
 
     Route::get('dashboard', DashboardController::class)->name('dashboard');
 
+    Route::get('/weather/search', [WeatherController::class, 'search'])->name('weather.search');
+    Route::get('/markers',        [MarkerController::class, 'index'])->name('markers.index');
+    Route::post('/markers',       [MarkerController::class, 'store'])->name('markers.store');
+    Route::delete('/markers/{id}',[MarkerController::class, 'destroy'])->name('markers.destroy');
     
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
     Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
