@@ -77,6 +77,7 @@ function windDirection(deg: number): string {
             <div class="flex flex-col gap-1">
                 <div class="flex items-center gap-2">
                     <input
+                        id="search"
                         v-model="searchQuery"
                         type="text"
                         placeholder="Otsi linna ilma…"
@@ -139,14 +140,14 @@ function windDirection(deg: number): string {
                 <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                     <PlaceholderPattern />
                     <a href="/posts" class="w-full h-full flex flex-col items-center justify-center gap-1 rounded-xl text-black">
-                        <h2 class="text-2xl font-bold ">Posts</h2>
+                        <h2 class="text-2xl font-bold ">BLOG</h2>
                         <p class="text-lg tracking-wide capitalize opacity-90">View all posts</p>
                     </a>
                 </div>
                 <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                     <PlaceholderPattern />
                     <a href="/products" class="w-full h-full flex flex-col items-center justify-center gap-1 rounded-xl text-black">
-                        <h2 class="text-2xl font-bold ">E-store</h2>
+                        <h2 class="text-2xl font-bold ">E-STORE</h2>
                         <p class="text-lg tracking-wide capitalize opacity-90">View all products</p>
                     </a>
                 </div>
