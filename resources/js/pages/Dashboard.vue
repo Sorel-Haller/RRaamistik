@@ -136,74 +136,21 @@ function windDirection(deg: number): string {
                     </template>
                     <p v-else class="p-4 text-sm opacity-60">Ilmaandmed pole saadaval</p>
                 </div>
- 
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70
-                            p-4 dark:border-sidebar-border flex flex-col justify-between">
-                    <template v-if="displayedWeather">
-                        <p class="text-xs uppercase tracking-widest opacity-50 mb-2">Tuul & Nähtavus</p>
-                        <div class="flex flex-col gap-3 text-sm">
-                            <div class="flex items-center gap-3">
-                                <span class="text-3xl leading-none">💨</span>
-                                <div>
-                                    <p class="font-semibold text-base">{{ displayedWeather.wind.speed }} m/s</p>
-                                    <p class="text-xs opacity-60">
-                                        {{ windDirection(displayedWeather.wind.deg) }}
-                                        · {{ displayedWeather.wind.deg }}°
-                                        <template v-if="displayedWeather.wind.gust">
-                                            · puhangud {{ displayedWeather.wind.gust }} m/s
-                                        </template>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <span class="text-3xl leading-none">👁️</span>
-                                <div>
-                                    <p class="font-semibold text-base">
-                                        {{ (displayedWeather.visibility / 1000).toFixed(1) }} km
-                                    </p>
-                                    <p class="text-xs opacity-60">Nähtavus</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <span class="text-3xl leading-none">🌡️</span>
-                                <div>
-                                    <p class="font-semibold text-base">{{ displayedWeather.main.pressure }} hPa</p>
-                                    <p class="text-xs opacity-60">Õhurõhk</p>
-                                </div>
-                            </div>
-                        </div>
-                    </template>
-                    <p v-else class="p-4 text-sm opacity-60">Ilmaandmed pole saadaval</p>
+                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+                    <PlaceholderPattern />
+                    <a href="/posts" class="w-full h-full flex flex-col items-center justify-center gap-1 rounded-xl text-black">
+                        <h2 class="text-2xl font-bold ">Posts</h2>
+                        <p class="text-lg tracking-wide capitalize opacity-90">View all posts</p>
+                    </a>
                 </div>
- 
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70
-                            p-4 dark:border-sidebar-border flex flex-col justify-between">
-                    <template v-if="displayedWeather">
-                        <p class="text-xs uppercase tracking-widest opacity-50 mb-2">Päike</p>
-                        <div class="flex flex-col gap-3 text-sm">
-                            <div class="flex items-center gap-3">
-                                <span class="text-3xl leading-none">🌅</span>
-                                <div>
-                                    <p class="font-semibold text-base">
-                                        {{ formatTime(displayedWeather.sys.sunrise, displayedWeather.timezone) }}
-                                    </p>
-                                    <p class="text-xs opacity-60">Päikesetõus (UTC)</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <span class="text-3xl leading-none">🌇</span>
-                                <div>
-                                    <p class="font-semibold text-base">
-                                        {{ formatTime(displayedWeather.sys.sunset, displayedWeather.timezone) }}
-                                    </p>
-                                    <p class="text-xs opacity-60">Päikeseloojang (UTC)</p>
-                                </div>
-                            </div>
-                        </div>
-                    </template>
-                    <p v-else class="p-4 text-sm opacity-60">Ilmaandmed pole saadaval</p>
+                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+                    <PlaceholderPattern />
+                    <a href="/products" class="w-full h-full flex flex-col items-center justify-center gap-1 rounded-xl text-black">
+                        <h2 class="text-2xl font-bold ">E-store</h2>
+                        <p class="text-lg tracking-wide capitalize opacity-90">View all products</p>
+                    </a>
                 </div>
- 
+
             </div>
  
             <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70

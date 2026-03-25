@@ -3,8 +3,7 @@
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PostController;
-use App\Http\Controllers\WeatherController;
-use App\Http\Controllers\MarkerController;
+use App\Http\Controllers\ProductController;
 use App\Mail\Timetable;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Http;
@@ -34,6 +33,11 @@ Route::middleware(['auth', 'verified'])->group(function() {
     
     Route::post('/add-comment/{post}', [CommentController::class, 'store'])->name('comments.add');
 
+    Route::get('/products', [ProductController::class, 'index'])
+    ->name('products.index');
+
+    Route::delete('/products/{products}', [ProductController::class, 'destroy'])
+        ->name('products.destroy');
 });
 
 
