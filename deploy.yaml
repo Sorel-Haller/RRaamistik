@@ -15,7 +15,7 @@ hosts:
 
 tasks:
   npm:production:
-  - run: 'cd {{release_path}} && npm ci'
+  - run: 'cd {{release_path}} && npm install'
   - run: 'cd {{release_path}} && npx vite build'
 
 
