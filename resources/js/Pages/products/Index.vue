@@ -1,13 +1,6 @@
 <script setup lang="ts">
 import Button from '@/components/ui/button/Button.vue'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger} from '@/components/ui/dropdown-menu'
 import Pagination from '@/components/ui/pagination/Pagination.vue'
 import PaginationContent from '@/components/ui/pagination/PaginationContent.vue'
 import PaginationEllipsis from '@/components/ui/pagination/PaginationEllipsis.vue'
@@ -17,23 +10,13 @@ import PaginationLast from '@/components/ui/pagination/PaginationLast.vue'
 import PaginationNext from '@/components/ui/pagination/PaginationNext.vue'
 import PaginationPrevious from '@/components/ui/pagination/PaginationPrevious.vue'
 
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table'
-
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import AppLayout from '@/layouts/AppLayout.vue'
 import { index } from '@/routes/products'
 import { type BreadcrumbItem } from '@/types'
 import { Head, router } from '@inertiajs/vue3'
 import { MoreVertical } from 'lucide-vue-next'
 
-/* Breadcrumbs */
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: 'Products',
@@ -41,7 +24,6 @@ const breadcrumbs: BreadcrumbItem[] = [
   },
 ]
 
-/* Types */
 interface PaginationLink {
   url: string | null
   label: string
@@ -76,12 +58,12 @@ type Product = {
   updated_at_formatted: string
 }
 
-/* Props */
+export type { Product }
+
 defineProps<{
   products: PaginatedResponse
 }>()
 
-/* Add to cart */
 const addToCart = (product: Product) => {
   let cart = JSON.parse(localStorage.getItem('cart') || '[]')
 
@@ -115,7 +97,6 @@ const deleteProduct = (id: number) => {
   <AppLayout :breadcrumbs="breadcrumbs">
     <div class="flex h-full flex-col gap-4 overflow-x-auto rounded-xl p-4">
 
-      <!-- TABLE -->
       <Table>
         <TableCaption>Your shop products</TableCaption>
 
@@ -179,7 +160,6 @@ const deleteProduct = (id: number) => {
         </TableBody>
       </Table>
 
-      <!-- PAGINATION -->
       <Pagination
         class="w-full"
         :page="products.current_page"

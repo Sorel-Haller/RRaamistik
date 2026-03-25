@@ -27,7 +27,6 @@ class Product extends Model
     'created_at_formatted',
     'updated_at_formatted',
 ];
-    
 
     protected function createdAtFormatted(): Attribute
     {

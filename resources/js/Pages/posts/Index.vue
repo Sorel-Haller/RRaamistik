@@ -16,7 +16,6 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { MoreVertical } from 'lucide-vue-next';
 
-// Breadcrumbs for layout navigation
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: 'Posts',
@@ -24,7 +23,6 @@ const breadcrumbs: BreadcrumbItem[] = [
   },
 ];
 
-// Type definitions
 interface PaginationLink {
   url: string | null;
   label: string;
@@ -107,7 +105,6 @@ const deletePost = (postId: number) => {
 
   <AppLayout :breadcrumbs="breadcrumbs">
     <div class="flex h-full flex-col gap-4 overflow-x-auto rounded-xl p-4">
-      <!-- <pre>{{ posts }}</pre> -->
 
       <Table>
         <TableCaption>A list of your recent blog posts.</TableCaption>
