@@ -36,10 +36,19 @@ defineProps<{
                 </div>
                 <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                     <PlaceholderPattern />
+                    <a href="/posts" class="w-full h-full flex flex-col items-center justify-center gap-1 rounded-xl text-black">
+                        <h2 class="text-2xl font-bold ">Posts</h2>
+                        <p class="text-lg tracking-wide capitalize opacity-90">View all posts</p>
+                    </a>
                 </div>
                 <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                     <PlaceholderPattern />
+                    <a href="/products" class="w-full h-full flex flex-col items-center justify-center gap-1 rounded-xl text-black">
+                        <h2 class="text-2xl font-bold ">E-store</h2>
+                        <p class="text-lg tracking-wide capitalize opacity-90">View all products</p>
+                    </a>
                 </div>
+
             </div>
             <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
                 <MapView/>
