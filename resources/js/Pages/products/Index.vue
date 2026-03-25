@@ -56,6 +56,7 @@ type Product = {
   stock_quantity: number
   created_at_formatted: string
   updated_at_formatted: string
+  image_url?: string
 }
 
 export type { Product }
@@ -97,68 +98,60 @@ const deleteProduct = (id: number) => {
   <AppLayout :breadcrumbs="breadcrumbs">
     <div class="flex h-full flex-col gap-4 overflow-x-auto rounded-xl p-4">
 
-      <Table>
-        <TableCaption>Your shop products</TableCaption>
+<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+  <div
+    v-for="product in products.data"
+    :key="product.id"
+    class="border rounded-xl p-4 flex flex-col gap-3 shadow-sm"
+  >
+    <!-- IMAGE -->
+    <img
+      :src="product.image"
+      alt="Product image"
+      class="w-full h-40 object-cover rounded-lg"
+    />
 
-        <TableHeader>
-          <TableRow>
-            <TableHead>ID</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>Stock</TableHead>
-            <TableHead class="text-right">Created</TableHead>
-            <TableHead class="text-right">Updated</TableHead>
-            <TableHead>
-              <span class="sr-only">Actions</span>
-            </TableHead>
-          </TableRow>
-        </TableHeader>
+    <!-- INFO -->
+    <div class="flex flex-col gap-1">
+      <h3 class="font-semibold text-lg">{{ product.name }}</h3>
+      <p class="text-sm text-muted-foreground line-clamp-2">
+        {{ product.description }}
+      </p>
+    </div>
 
-        <TableBody>
-          <TableRow v-for="product in products.data" :key="product.id">
-            <TableCell>{{ product.id }}</TableCell>
-            <TableCell>{{ product.name }}</TableCell>
-            <TableCell>{{ product.price }} €</TableCell>
-            <TableCell>{{ product.stock_quantity }}</TableCell>
-            <TableCell class="text-right">
-              {{ product.created_at_formatted }}
-            </TableCell>
-            <TableCell class="text-right">
-              {{ product.updated_at_formatted }}
-            </TableCell>
+    <!-- PRICE + STOCK -->
+    <div class="flex justify-between items-center mt-auto">
+      <span class="font-bold">{{ product.price }} €</span>
+      <span class="text-sm text-muted-foreground">
+        Stock: {{ product.stock_quantity }}
+      </span>
+    </div>
 
-            <TableCell>
-              <div class="flex justify-end">
-                <DropdownMenu>
-                  <DropdownMenuTrigger as-child>
-                    <Button size="icon" variant="ghost">
-                      <MoreVertical />
-                    </Button>
-                  </DropdownMenuTrigger>
+    <!-- ACTIONS -->
+    <div class="flex justify-between items-center mt-2">
+      <Button size="sm" @click="addToCart(product)">
+        Add to cart
+      </Button>
 
-                  <DropdownMenuContent>
+      <DropdownMenu>
+        <DropdownMenuTrigger as-child>
+          <Button size="icon" variant="ghost">
+            <MoreVertical />
+          </Button>
+        </DropdownMenuTrigger>
 
-                    <DropdownMenuItem @click="addToCart(product)">
-                      Add to cart
-                    </DropdownMenuItem>
-
-                    <DropdownMenuSeparator />
-
-                    <DropdownMenuItem
-                      class="text-destructive"
-                      @click="deleteProduct(product.id)"
-                    >
-                      Delete
-                    </DropdownMenuItem>
-
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </TableCell>
-
-          </TableRow>
-        </TableBody>
-      </Table>
+        <DropdownMenuContent>
+          <DropdownMenuItem
+            class="text-destructive"
+            @click="deleteProduct(product.id)"
+          >
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  </div>
+</div>
 
       <Pagination
         class="w-full"

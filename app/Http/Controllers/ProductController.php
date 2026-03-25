@@ -27,7 +27,7 @@ class ProductController extends Controller
                 'updated_at_formatted' => $product->updated_at_formatted,
             ]);
 
-        return Inertia::render('products/index', [
+        return Inertia::render('products/Index', [
             'products' => $products,
         ]);
     }
