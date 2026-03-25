@@ -12,4 +12,9 @@ class Marker extends Model
         'longitude',
         'description'
     ];
+
+    protected $casts = [
+        'latitude' => 'float',
+        'longitude' => 'float',
+    ];
 }

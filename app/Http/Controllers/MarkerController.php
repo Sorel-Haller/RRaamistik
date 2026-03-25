@@ -15,13 +15,14 @@ class MarkerController extends Controller
 
     public function store(Request $request)
     {
-        return Marker::create($request->all());
+        $marker = Marker::create($request->all());
+        return response()->json($marker, 201);
     }
 
     public function destroy($id)
     {
         Marker::destroy($id);
-        return response()->json(['success'=>true]);
+        return response()->json($marker);
     }
 
 }

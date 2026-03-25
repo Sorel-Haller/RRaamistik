@@ -62,12 +62,17 @@ onMounted(async () => {
         errorMsg.value        = '';
     });
  
-    try {
-        const { data } = await axios.get<MarkerData[]>('/markers');
-        data.forEach(addMarkerToMap);
-    } catch {
-        console.error('Failed to load markers');
-    }
+const loadingMarkers = ref(true);
+const loadError = ref('');
+
+try {
+    const { data } = await axios.get('/markers');
+    data.forEach(addMarkerToMap);
+} catch {
+    loadError.value = 'Markerite laadimine ebaõnnestus';
+} finally {
+    loadingMarkers.value = false;
+}
  
     window.addEventListener('delete-marker', async (e: Event) => {
         const id = (e as CustomEvent<number>).detail;

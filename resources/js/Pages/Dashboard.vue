@@ -4,6 +4,7 @@ import { dashboard } from '@/routes';
 import { type WeatherData, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import MapView from '@/components/MapView.vue';
+import PlaceholderPattern from '@/components/PlaceholderPattern.vue';
 import { ref, computed } from 'vue';
  
 const breadcrumbs: BreadcrumbItem[] = [
