@@ -3,47 +3,55 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
+use Inertia\Inertia;
 
 class WeatherController extends Controller
 {
-    /**
-     * Search weather by city name.
-     * Results are cached per city for 1 hour to reduce API calls.
-     */
-    public function search(Request $request)
+    public function index(Request $request)
     {
-        $request->validate([
-            'city' => ['required', 'string', 'min:1', 'max:100'],
-        ]);
+        $city = $request->query('city', 'Tallinn');
+        $weather = null;
+        $error = null;
 
-        $city = trim($request->input('city'));
-        $cacheKey = 'weather_city_' . strtolower(str_replace(' ', '_', $city));
+        $apiKey = config('services.openweathermap.key');
 
-        $data = Cache::remember($cacheKey, now()->addHour(), function () use ($city) {
-            $response = Http::get('https://api.openweathermap.org/data/2.5/weather', [
-                'q'     => $city,
-                'appid' => config('services.weather.key'),
-                'units' => 'metric',
-            ]);
+        if ($apiKey) {
+            $cacheKey = 'weather_' . strtolower(trim($city));
 
-            if ($response->failed()) {
-                return null;
+            $weather = Cache::remember($cacheKey, 600, function () use ($city, $apiKey, &$error) {
+                try {
+                    $response = Http::get('https://api.openweathermap.org/data/2.5/weather', [
+                        'q' => $city,
+                        'appid' => $apiKey,
+                        'units' => 'metric',
+                        'lang' => 'et',
+                    ]);
+
+                    if ($response->successful()) {
+                        return $response->json();
+                    }
+
+                    $error = 'Linna ei leitud. Palun proovi uuesti.';
+                    return null;
+                } catch (\Exception $e) {
+                    $error = 'Ilmateenusega ühendamine ebaõnnestus.';
+                    return null;
+                }
+            });
+
+            if ($weather === null) {
+                Cache::forget($cacheKey);
             }
-
-            return $response->json();
-        });
-
-        if (is_null($data) || isset($data['cod']) && $data['cod'] !== 200) {
-            // Clear bad cache entry so next request retries
-            Cache::forget($cacheKey);
-
-            return response()->json([
-                'error' => 'City not found or weather service unavailable.',
-            ], 404);
+        } else {
+            $error = 'OpenWeatherMap API võti on seadistamata. Lisa OPENWEATHERMAP_API_KEY .env faili.';
         }
 
-        return response()->json($data);
+        return Inertia::render('Weather/Index', [
+            'weather' => $weather,
+            'city' => $city,
+            'error' => $error,
+        ]);
     }
 }
