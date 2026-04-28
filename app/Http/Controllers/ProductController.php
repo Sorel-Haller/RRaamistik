@@ -22,7 +22,7 @@ class ProductController extends Controller
                 'description' => $product->description,
                 'price' => $product->price,
                 'sku' => $product->sku,
-                'stock_quantity' => $product->stock_quantity,
+                'quantity' => $product->stock_quantity,
                 'created_at_formatted' => $product->created_at_formatted,
                 'updated_at_formatted' => $product->updated_at_formatted,
             ]);
