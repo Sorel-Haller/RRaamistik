@@ -11,7 +11,7 @@ import PaginationNext from '@/components/ui/pagination/PaginationNext.vue';
 import PaginationPrevious from '@/components/ui/pagination/PaginationPrevious.vue';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { destroy, edit, show, index } from '@/routes/posts';
+import { destroy, edit, show, create, index } from '@/routes/posts';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { MoreVertical } from 'lucide-vue-next';
@@ -82,6 +82,7 @@ export type Post = {
 
 defineProps<{
   posts: PaginatedResponse;
+  fallbackPost: Post | null;
 }>();
 const deletePost = (postId: number) => {
   if (!confirm('Aga miks sa kustutad?')) return;
@@ -96,93 +97,150 @@ const deletePost = (postId: number) => {
     },
   });
 }
-
 </script>
 
 <template>
-
   <Head title="Posts" />
 
   <AppLayout :breadcrumbs="breadcrumbs">
-    <div class="flex h-full flex-col gap-4 overflow-x-auto rounded-xl p-4">
+    <div class="flex flex-col gap-6 p-6">
 
-      <Table>
-        <TableCaption>A list of your recent blog posts.</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead class="w-[100px]">ID</TableHead>
-            <TableHead>Title</TableHead>
-            <TableHead>Author</TableHead>
-            <TableHead class="text-right">Created at</TableHead>
-            <TableHead class="text-right">Updated At</TableHead>
-            <TableHead class="text-right">Published</TableHead>
-            <TableHead>
-              <span class="sr-only">Actions</span>
-            </TableHead>
-          </TableRow>
-        </TableHeader>
+      <!-- HEADER -->
+      <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold">Blog Posts</h1>
 
-        <TableBody>
-          <TableRow v-for="post in posts.data" :key="post.id">
-            <TableCell class="font-medium">{{ post.id }}</TableCell>
-            <TableCell>{{ post.title }}</TableCell>
-            <TableCell>{{ post.author.first_name }} {{ post.author.last_name }}</TableCell>
-            <TableCell class="text-right">{{ post.created_at_formatted }}</TableCell>
-            <TableCell class="text-right">{{ post.updated_at_formatted }}</TableCell>
-            <TableCell class="text-right">
-              <span :class="post.published ? 'text-green-600' : 'text-gray-400'">
-                {{ post.published ? 'Yes' : 'No' }}
-              </span>
-            </TableCell>
+        <!-- NEW POST BUTTON -->
+          <Link :href="create.url()">
+            <Button class="bg-primary text-white">
+              + New Post
+            </Button>
+          </Link>
+      </div>
 
-            <TableCell>
-              <div class="flex justify-end">
-                <DropdownMenu>
-                  <DropdownMenuTrigger as-child>
-                    <Button size="icon" variant="ghost">
-                      <MoreVertical />
-                    </Button>
-                  </DropdownMenuTrigger>
+      <!-- GRID -->
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Link
+  v-if="!posts?.data?.length && fallbackPost"
+  :href="show.url(fallbackPost.id)"
+  class="block rounded-xl border p-4 bg-white dark:bg-neutral-900 shadow-sm hover:shadow-md transition"
+>
+  <h2 class="font-semibold text-lg leading-tight">
+    {{ fallbackPost.title }}
+  </h2>
 
-                  <DropdownMenuContent>
-                    <DropdownMenuItem as-child>
-                      <Link :href="show.url(post.id)">View</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem as-child>
-                      <Link :href="edit.url(post.id)">Edit</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem class="text-destructive" @click="deletePost(post.id)">
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
+  <p class="text-sm opacity-60 mt-1 line-clamp-3">
+    {{ fallbackPost.content }}
+  </p>
 
-      <Pagination class="w-full" :page="posts.current_page" v-slot="{ page }" :total="posts.total"
-        :items-per-page="posts.per_page" @update:page="(page) => router.get(index().url, { page: page })">
+  <div class="flex items-center justify-between mt-4">
+    <div class="text-xs opacity-70">
+      {{ fallbackPost.author.first_name }}
+      {{ fallbackPost.author.last_name }}
+    </div>
+  </div>
+</Link>
+        <div
+          v-for="post in posts.data"
+          :key="post.id"
+          class="rounded-xl border p-4 bg-white dark:bg-neutral-900 shadow-sm
+                 hover:shadow-md transition flex flex-col justify-between"
+        >
+          <!-- TITLE -->
+          <div>
+            <h2 class="font-semibold text-lg leading-tight">
+              {{ post.title }}
+            </h2>
+
+            <p class="text-sm opacity-60 mt-1 line-clamp-3">
+              {{ post.content }}
+            </p>
+          </div>
+
+          <!-- FOOTER -->
+          <div class="flex items-center justify-between mt-4">
+
+            <!-- AUTHOR -->
+            <div class="text-xs opacity-70">
+              {{ post.author.first_name }} {{ post.author.last_name }}
+            </div>
+
+            <!-- STATUS -->
+            <span
+              class="px-2 py-1 rounded-full text-xs"
+              :class="post.published
+                ? 'bg-green-100 text-green-700'
+                : 'bg-gray-200 text-gray-600'"
+            >
+              {{ post.published ? 'Published' : 'Draft' }}
+            </span>
+          </div>
+
+          <!-- ACTIONS -->
+          <div class="flex justify-end mt-3">
+            <DropdownMenu>
+              <DropdownMenuTrigger as-child>
+                <Button size="icon" variant="ghost">
+                  <MoreVertical />
+                </Button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent>
+                <DropdownMenuItem as-child>
+                  <Link :href="show.url(post.id)">View</Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem as-child>
+                  <Link :href="edit.url(post.id)">Edit</Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator />
+
+                <DropdownMenuItem
+                  class="text-destructive"
+                  @click="deletePost(post.id)"
+                >
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- PAGINATION -->
+      <Pagination
+        class="w-full"
+        :page="posts.current_page"
+        v-slot="{ page }"
+        :total="posts.total"
+        :items-per-page="posts.per_page"
+        @update:page="(page) => router.get(index().url, { page: page })"
+      >
         <PaginationContent v-slot="{ items }" class="flex items-center gap-1">
-          <PaginationFirst />
           <PaginationPrevious />
 
           <template v-for="(item, index) in items" :key="index">
-            <PaginationItem v-if="item.type === 'page'" :value="item.value" as-child>
-              <Button class="w-10 h-10 p-0" :variant="item.value === page ? 'default' : 'outline'">
+            <PaginationItem
+              v-if="item.type === 'page'"
+              :value="item.value"
+              as-child
+            >
+              <Button
+                class="w-9 h-9 p-0"
+                :variant="item.value === page ? 'default' : 'outline'"
+              >
                 {{ item.value }}
               </Button>
             </PaginationItem>
 
-            <PaginationEllipsis v-else :key="item.type" :index="index" />
+            <PaginationEllipsis v-else :index="index" />
           </template>
 
           <PaginationNext />
-          <PaginationLast />
         </PaginationContent>
       </Pagination>
+
     </div>
   </AppLayout>
 </template>

@@ -7,37 +7,39 @@ use App\Models\Marker;
 
 class MarkerController extends Controller
 {
+    public function index()
+    {
+        return response()->json(Marker::all());
+    }
+
     public function store(Request $request)
     {
-        Marker::create([
-            'name' => $request->name,
-            'lat' => $request->lat,
-            'lng' => $request->lng,
+        $marker = Marker::create([
+            'name'        => $request->name,
+            'latitude'    => $request->latitude,
+            'longitude'   => $request->longitude,
             'description' => $request->description,
-            'added' => now(),
-            'edited' => now(),
         ]);
 
-     return redirect()->back();
+        return response()->json($marker, 201);
     }
 
-    public function update(Request $request, \App\Models\Marker $marker)
+    public function update(Request $request, Marker $marker)
     {
         $marker->update([
-            'name' => $request->name,
-            'lat' => $request->lat,
-            'lng' => $request->lng,
+            'name'        => $request->name,
+            'latitude'    => $request->latitude,
+            'longitude'   => $request->longitude,
             'description' => $request->description,
-            'edited' => now(),
         ]);
 
-    return redirect()->back();
+        return response()->json($marker);
     }
 
-    public function destroy($id)
+    public function destroy(Marker $marker)
     {
-    \App\Models\Marker::findOrFail($id)->delete();
+        $marker->delete();
 
-    return redirect()->back();
+        return response()->json(['deleted' => true]);
     }
 }

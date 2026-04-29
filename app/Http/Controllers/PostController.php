@@ -14,8 +14,17 @@ class PostController extends Controller
      */
     public function index()
     {
+        $posts = Post::with('author:id,first_name,last_name')->paginate(30);
+
+        $fallbackPost = null;
+
+        if ($posts->isEmpty()) {
+            $fallbackPost = Post::with('author:id,first_name,last_name')->first();
+        }
+
         return Inertia::render('posts/Index', [
-            'posts' => Post::with('author:id,first_name,last_name')->paginate(30),
+            'posts' => $posts,
+            'fallbackPost' => $fallbackPost,
         ]);
     }
 

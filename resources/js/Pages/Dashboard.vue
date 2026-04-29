@@ -6,41 +6,68 @@ import { Head } from '@inertiajs/vue3';
 import MapView from '@/components/MapView.vue';
 import PlaceholderPattern from '@/components/PlaceholderPattern.vue';
 import { ref, computed } from 'vue';
- 
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
         href: dashboard().url,
     },
 ];
- 
+
 const props = defineProps<{
     weather?: WeatherData;
 }>();
- 
+
 const searchQuery   = ref('');
 const searchResult  = ref<WeatherData | null>(null);
 const searchError   = ref('');
 const searchLoading = ref(false);
- 
-const displayedWeather = computed<WeatherData | null>(
-    () => searchResult.value ?? props.weather ?? null,
-);
- 
+
+const displayedWeather = computed<WeatherData | null>(() => {
+    const w = searchResult.value ?? props.weather;
+
+    if (!w?.main || !w?.weather) return null;
+
+    return w;
+});
+
+const weatherTranslations: Record<string, string> = {
+  "clear sky": "selge taevas",
+  "few clouds": "vähesed pilved",
+  "scattered clouds": "hajusad pilved",
+  "broken clouds": "pilves",
+  "overcast clouds": "lauspilves",
+  "light rain": "kerge vihm",
+  "moderate rain": "mõõdukas vihm",
+  "heavy intensity rain": "tugev vihm",
+  "shower rain": "hoovihm",
+  thunderstorm: "äike",
+  snow: "lumi",
+  mist: "udu",
+  fog: "udu",
+  haze: "vine",
+};
+
+const getWeatherText = (desc?: string) =>
+  desc
+    ? weatherTranslations[desc.toLowerCase()] ?? desc
+    : "";
+
 async function searchCity() {
     const city = searchQuery.value.trim();
     if (!city) return;
- 
+
     searchLoading.value = true;
     searchError.value   = '';
     searchResult.value  = null;
- 
+
     try {
         const res  = await fetch(`/weather/search?city=${encodeURIComponent(city)}`, {
             headers: { Accept: 'application/json' },
         });
+
         const data = await res.json();
- 
+
         if (!res.ok) {
             searchError.value = data.error ?? 'Linna ei leitud.';
         } else {
@@ -52,114 +79,158 @@ async function searchCity() {
         searchLoading.value = false;
     }
 }
- 
+
 function clearSearch() {
     searchQuery.value  = '';
     searchResult.value = null;
     searchError.value  = '';
 }
- 
+
 function formatTime(unix: number, timezoneOffset: number): string {
     const d = new Date((unix + timezoneOffset) * 1000);
     return d.toUTCString().slice(17, 22);
 }
- 
+
 function windDirection(deg: number): string {
     const dirs = ['P', 'KI', 'I', 'KL', 'L', 'LL', 'LO', 'LP'];
     return dirs[Math.round(deg / 45) % 8];
 }
 </script>
- 
+
 <template>
     <Head title="Dashboard" />
+
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
- 
-            <div class="flex flex-col gap-1">
-                <div class="flex items-center gap-2">
-                    <input
-                        id="search"
-                        v-model="searchQuery"
-                        type="text"
-                        placeholder="Otsi linna ilma…"
-                        class="flex-1 rounded-lg border border-sidebar-border/70 bg-transparent px-3 py-2 text-sm
-                               outline-none focus:ring-2 focus:ring-primary dark:border-sidebar-border"
-                        @keyup.enter="searchCity"
-                    />
-                    <button
-                        :disabled="searchLoading"
-                        class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground
-                               transition-opacity hover:opacity-90 disabled:opacity-50"
-                        @click="searchCity"
-                    >
-                        {{ searchLoading ? 'Otsib…' : 'Otsi' }}
-                    </button>
-                    <button
-                        v-if="searchResult"
-                        class="rounded-lg border border-sidebar-border/70 px-3 py-2 text-sm
-                               transition-colors hover:bg-muted dark:border-sidebar-border"
-                        @click="clearSearch"
-                    >
-                        ✕
-                    </button>
-                </div>
-                <p v-if="searchError" class="text-sm text-destructive">{{ searchError }}</p>
-            </div>
- 
-            <div class="grid auto-rows-min gap-4 md:grid-cols-3">
- 
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70
-                            p-4 dark:border-sidebar-border flex flex-col justify-between">
-                    <template v-if="displayedWeather">
-                        <div>
-                            <p class="text-xs uppercase tracking-widest opacity-50 mb-1">
-                                {{ displayedWeather.name }}, {{ displayedWeather.sys.country }}
-                            </p>
-                            <h2 class="text-5xl font-bold leading-none">
-                                {{ Math.round(displayedWeather.main.temp) }}°C
-                            </h2>
-                            <p class="mt-1 text-sm capitalize opacity-80">
-                                {{ displayedWeather.weather[0].description }}
-                            </p>
-                            <p class="text-xs opacity-50 mt-0.5">
-                                Tundub {{ Math.round(displayedWeather.main.feels_like) }}°C
-                            </p>
-                        </div>
-                        <div class="flex gap-4 text-sm opacity-75">
-                            <span>↑ {{ Math.round(displayedWeather.main.temp_max) }}°</span>
-                            <span>↓ {{ Math.round(displayedWeather.main.temp_min) }}°</span>
-                            <span>💧 {{ displayedWeather.main.humidity }}%</span>
-                        </div>
-                        <img
-                            class="size-20 absolute top-2 right-2 drop-shadow"
-                            :src="`https://openweathermap.org/img/wn/${displayedWeather.weather[0].icon}@2x.png`"
-                            :alt="displayedWeather.weather[0].description"
-                        />
-                    </template>
-                    <p v-else class="p-4 text-sm opacity-60">Ilmaandmed pole saadaval</p>
-                </div>
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern />
-                    <a href="/posts" class="w-full h-full flex flex-col items-center justify-center gap-1 rounded-xl text-black">
-                        <h2 class="text-2xl font-bold ">BLOG</h2>
-                        <p class="text-lg tracking-wide capitalize opacity-90">View all posts</p>
-                    </a>
-                </div>
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern />
-                    <a href="/products" class="w-full h-full flex flex-col items-center justify-center gap-1 rounded-xl text-black">
-                        <h2 class="text-2xl font-bold ">E-STORE</h2>
-                        <p class="text-lg tracking-wide capitalize opacity-90">View all products</p>
-                    </a>
+        <div class="flex flex-col gap-6 p-6">
+
+            <!-- HEADER -->
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold">Dashboard</h1>
+                    <p class="text-sm opacity-60">Welcome back 👋</p>
                 </div>
 
+                <!-- SEARCH -->
+                <div class="flex items-center gap-2 w-full md:w-[400px]">
+                    <input
+                        id="city-search"
+                        v-model="searchQuery"
+                        type="text"
+                        placeholder="Search city weather..."
+                        class="flex-1 rounded-lg border border-sidebar-border/70 px-3 py-2 text-sm
+                               focus:ring-2 focus:ring-primary outline-none"
+                        @keyup.enter="searchCity"
+                    />
+
+                    <button
+                        :disabled="searchLoading"
+                        class="rounded-lg bg-green-600 px-4 py-2 text-sm text-white"
+                        @click="searchCity"
+                    >
+                        {{ searchLoading ? '...' : 'Otsi' }}
+                    </button>
+                </div>
             </div>
- 
-            <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70
-                        md:min-h-min dark:border-sidebar-border">
-                <MapView />
+
+            <!-- MAIN GRID -->
+            <div class="grid gap-6 lg:grid-cols-3 ">
+
+                <!-- WEATHER (BIG CARD) -->
+                <div class="lg:col-span-2 rounded-2xl h-fit p-6 text-white relative overflow-hidden
+                            bg-gradient-to-br from-blue-500 to-blue-400 shadow-lg">
+
+                    <template v-if="displayedWeather">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm opacity-80">
+                                    {{ displayedWeather.name }},
+                                    {{ displayedWeather.sys?.country }}
+                                </p>
+
+                                <h2 class="text-6xl font-bold mt-2">
+                                    {{ Math.round(displayedWeather.main.temp) }}°C
+                                </h2>
+
+                                <p class="capitalize opacity-90">
+                                    {{ getWeatherText(displayedWeather.weather[0].description) }}
+                                </p>
+
+                                <p class="text-sm opacity-70">
+                                    Tundub nagu {{ Math.round(displayedWeather.main.feels_like) }}°C
+                                </p>
+                            </div>
+
+                            <img
+                                v-if="displayedWeather.weather?.[0]?.icon"
+                                class="w-24"
+                                :src="`https://openweathermap.org/img/wn/${displayedWeather.weather[0].icon}@2x.png`"
+                            />
+                        </div>
+
+                        <!-- STATS -->
+                        <div class="grid grid-cols-4 gap-4 mt-6 text-sm bg-white/20 p-4 rounded-xl">
+                            <div>↑ {{ Math.round(displayedWeather.main.temp_max) }}°</div>
+                            <div>↓ {{ Math.round(displayedWeather.main.temp_min) }}°</div>
+                            <div>💧 {{ displayedWeather.main.humidity }}%</div>
+                            <div>
+                                🌬 {{ Math.round(displayedWeather.wind.speed) }} m/s
+                            </div>
+                        </div>
+                    </template>
+
+                    <p v-else class="opacity-70">No weather data</p>
+                </div>
+
+                <!-- SIDE CARDS -->
+                <div class="flex flex-col gap-4">
+
+                    <!-- BLOG -->
+                    <a href="/posts"
+                       class="rounded-2xl border p-5 hover:shadow-md transition bg-white dark:bg-neutral-900">
+                        <p class="text-lg font-semibold">Blog</p>
+                        <p class="text-sm opacity-60">Read latest posts</p>
+
+                        <div class="mt-3 text-primary text-sm font-medium">
+                            View posts →
+                        </div>
+                    </a>
+
+                    <!-- STORE -->
+                    <a href="/products"
+                       class="rounded-2xl border p-5 hover:shadow-md transition bg-white dark:bg-neutral-900">
+                        <p class="text-lg font-semibold">E-Store</p>
+                        <p class="text-sm opacity-60">Browse products</p>
+
+                        <div class="mt-3 text-primary text-sm font-medium">
+                            View products →
+                        </div>
+                    </a>
+
+                    <!-- API -->
+                    <a href="/api"
+                       class="rounded-2xl border p-5 hover:shadow-md transition bg-white dark:bg-neutral-900">
+                        <p class="text-lg font-semibold">API</p>
+                        <p class="text-sm opacity-60">Explore your API</p>
+
+                        <div class="mt-3 text-primary text-sm font-medium">
+                            Go to API →
+                        </div>
+                    </a>
+                </div>
             </div>
- 
+
+            <!-- MAP SECTION -->
+            <div class="rounded-2xl border p-4 shadow-sm bg-white dark:bg-neutral-900">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="font-semibold">Map</h2>
+                    <button class="text-sm opacity-60">Filter</button>
+                </div>
+
+                <div class="h-[400px] rounded-xl overflow-hidden">
+                    <MapView />
+                </div>
+            </div>
+
         </div>
     </AppLayout>
 </template>

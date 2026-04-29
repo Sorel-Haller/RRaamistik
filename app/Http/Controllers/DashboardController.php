@@ -9,26 +9,38 @@ use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
     public function __invoke(Request $request)
     {
-        $city = $request->query('city', 'Tallinn');
+        $city   = $request->query('city', 'Tallinn'); // 👈 change default city here
+        $apiKey = config('services.openweathermap.key');
+        $weather = null;
 
-        $value = Cache::remember('weather_' . $city, now()-> addHour(), function () use ($city) {
-             $response = Http::get('https://api.openweathermap.org/data/2.5/weather', [
-            'q' => $city, 
-            'appid'=> config('services.weather.key'),
-            'units' => 'metric', 
-            ]); 
+        if ($apiKey) {
+            $cacheKey = 'weather_' . strtolower(trim($city));
 
-            return $response -> json();
-        });
-       
+            $weather = Cache::remember($cacheKey, 600, function () use ($city, $apiKey) {
+                try {
+                    $response = Http::get('https://api.openweathermap.org/data/2.5/weather', [
+                        'q'     => $city,
+                        'appid' => $apiKey,
+                        'units' => 'metric',
+                        'lang'  => 'et',
+                    ]);
+
+                    return $response->successful() ? $response->json() : null;
+                } catch (\Exception $e) {
+                    return null;
+                }
+            });
+
+            if ($weather === null) {
+                Cache::forget($cacheKey);
+            }
+        }
+
         return Inertia::render('Dashboard', [
-            'weather' => $value,
-            'city' => $city,
+            'weather' => $weather,
+            'city'    => $city,
             'markers' => \App\Models\Marker::all(),
         ]);
     }

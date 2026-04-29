@@ -10,7 +10,7 @@ use Inertia\Inertia;
 class WeatherController extends Controller
 {
     public function index(Request $request)
-    {
+    {   
         $city = $request->query('city', 'Tallinn');
         $weather = null;
         $error = null;
@@ -53,5 +53,37 @@ class WeatherController extends Controller
             'city' => $city,
             'error' => $error,
         ]);
+    }
+    public function search(Request $request)
+    {
+        $city = $request->query('city', '');
+        $apiKey = config('services.openweathermap.key');
+
+        if (!$apiKey) {
+            return response()->json(['error' => 'API võti puudub.'], 500);
+        }
+
+        $cacheKey = 'weather_' . strtolower(trim($city));
+
+        $weather = Cache::remember($cacheKey, 600, function () use ($city, $apiKey) {
+            try {
+                $response = Http::get('https://api.openweathermap.org/data/2.5/weather', [
+                    'q'     => $city,
+                    'appid' => $apiKey,
+                    'units' => 'metric',
+                    'lang'  => 'et',
+                ]);
+                return $response->successful() ? $response->json() : null;
+            } catch (\Exception $e) {
+                return null;
+            }
+        });
+
+        if ($weather === null) {
+            Cache::forget($cacheKey);
+            return response()->json(['error' => 'Linna ei leitud.'], 404);
+        }
+
+        return response()->json($weather);
     }
 }
