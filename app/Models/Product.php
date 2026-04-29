@@ -17,6 +17,7 @@ class Product extends Model
         'price',
         'sku',
         'stock_quantity',
+        'image',
     ];   
 
     protected $casts = [

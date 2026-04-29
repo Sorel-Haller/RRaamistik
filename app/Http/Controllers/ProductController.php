@@ -15,14 +15,15 @@ class ProductController extends Controller
     {
         $products = Product::query()
             ->latest()
-            ->paginate(10) 
-            ->through(fn ($product) => [
-                'id' => $product->id,
-                'name' => $product->name,
-                'description' => $product->description,
-                'price' => $product->price,
-                'sku' => $product->sku,
-                'quantity' => $product->stock_quantity,
+            ->paginate(12)
+            ->through(fn($product) => [
+                'id'             => $product->id,
+                'name'           => $product->name,
+                'description'    => $product->description,
+                'price'          => $product->price,
+                'sku'            => $product->sku,
+                'stock_quantity' => $product->stock_quantity,
+                'image'          => $product->image,
                 'created_at_formatted' => $product->created_at_formatted,
                 'updated_at_formatted' => $product->updated_at_formatted,
             ]);

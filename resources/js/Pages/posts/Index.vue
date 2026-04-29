@@ -112,7 +112,7 @@ const deletePost = (postId: number) => {
         <!-- NEW POST BUTTON -->
           <Link :href="create.url()">
             <Button class="bg-primary text-white">
-              + New Post
+              Add New Post
             </Button>
           </Link>
       </div>
@@ -120,85 +120,65 @@ const deletePost = (postId: number) => {
       <!-- GRID -->
       <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Link
-  v-if="!posts?.data?.length && fallbackPost"
-  :href="show.url(fallbackPost.id)"
-  class="block rounded-xl border p-4 bg-white dark:bg-neutral-900 shadow-sm hover:shadow-md transition"
->
-  <h2 class="font-semibold text-lg leading-tight">
-    {{ fallbackPost.title }}
-  </h2>
+          v-if="!posts?.data?.length && fallbackPost"
+          :href="show.url(fallbackPost.id)"
+          class="block rounded-xl border p-4 bg-white dark:bg-neutral-900 shadow-sm hover:shadow-md transition"
+        >
+          <h2 class="font-semibold text-lg leading-tight">
+            {{ fallbackPost.title }}
+          </h2>
 
-  <p class="text-sm opacity-60 mt-1 line-clamp-3">
-    {{ fallbackPost.content }}
-  </p>
+          <p class="text-sm opacity-60 mt-1 line-clamp-3">
+            {{ fallbackPost.content }}
+          </p>
 
-  <div class="flex items-center justify-between mt-4">
-    <div class="text-xs opacity-70">
-      {{ fallbackPost.author.first_name }}
-      {{ fallbackPost.author.last_name }}
-    </div>
-  </div>
-</Link>
+          <div class="flex items-center justify-between mt-4">
+            <div class="text-xs opacity-70">
+              {{ fallbackPost.author.first_name }}
+              {{ fallbackPost.author.last_name }}
+            </div>
+          </div>
+        </Link>
         <div
           v-for="post in posts.data"
           :key="post.id"
-          class="rounded-xl border p-4 bg-white dark:bg-neutral-900 shadow-sm
-                 hover:shadow-md transition flex flex-col justify-between"
+          class="rounded-xl border bg-white dark:bg-neutral-900 shadow-sm
+                hover:shadow-md transition flex flex-col justify-between"
         >
-          <!-- TITLE -->
-          <div>
-            <h2 class="font-semibold text-lg leading-tight">
-              {{ post.title }}
-            </h2>
+          <!-- Clickable area -->
+          <Link :href="show.url(post.id)" class="flex flex-col gap-2 p-4">
+            <h2 class="font-semibold text-lg leading-tight">{{ post.title }}</h2>
 
-            <p class="text-sm opacity-60 mt-1 line-clamp-3">
-              {{ post.content }}
-            </p>
-          </div>
+            <p class="text-sm opacity-60 line-clamp-3">{{ post.content }}</p>
 
-          <!-- FOOTER -->
-          <div class="flex items-center justify-between mt-4">
-
-            <!-- AUTHOR -->
-            <div class="text-xs opacity-70">
-              {{ post.author.first_name }} {{ post.author.last_name }}
+            <div class="flex items-center justify-between mt-2">
+              <div class="text-xs opacity-70">
+                {{ post.author.first_name }} {{ post.author.last_name }}
+              </div>
+              <span
+                class="px-2 py-1 rounded-full text-xs"
+                :class="post.published ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-600'"
+              >
+                {{ post.published ? 'Published' : 'Draft' }}
+              </span>
             </div>
+          </Link>
 
-            <!-- STATUS -->
-            <span
-              class="px-2 py-1 rounded-full text-xs"
-              :class="post.published
-                ? 'bg-green-100 text-green-700'
-                : 'bg-gray-200 text-gray-600'"
-            >
-              {{ post.published ? 'Published' : 'Draft' }}
-            </span>
-          </div>
-
-          <!-- ACTIONS -->
-          <div class="flex justify-end mt-3">
+          <!-- Dropdown stays outside the Link so it doesn't trigger navigation -->
+          <div class="flex justify-end px-4 pb-3">
             <DropdownMenu>
               <DropdownMenuTrigger as-child>
-                <Button size="icon" variant="ghost">
-                  <MoreVertical />
-                </Button>
+                <Button size="icon" variant="ghost"><MoreVertical /></Button>
               </DropdownMenuTrigger>
-
               <DropdownMenuContent>
                 <DropdownMenuItem as-child>
                   <Link :href="show.url(post.id)">View</Link>
                 </DropdownMenuItem>
-
                 <DropdownMenuItem as-child>
                   <Link :href="edit.url(post.id)">Edit</Link>
                 </DropdownMenuItem>
-
                 <DropdownMenuSeparator />
-
-                <DropdownMenuItem
-                  class="text-destructive"
-                  @click="deletePost(post.id)"
-                >
+                <DropdownMenuItem class="text-destructive" @click="deletePost(post.id)">
                   Delete
                 </DropdownMenuItem>
               </DropdownMenuContent>

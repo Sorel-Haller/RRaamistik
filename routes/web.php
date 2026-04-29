@@ -6,6 +6,9 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\WeatherController;
 use App\Http\Controllers\MarkerController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\RecipesController;
 use App\Mail\Timetable;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Http;
@@ -36,8 +39,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/products',              [ProductController::class, 'index'])->name('products.index');
     Route::delete('/products/{products}',[ProductController::class, 'destroy'])->name('products.destroy');
-});
 
+    Route::get('/cart',                  [CartController::class,  'index'])->name('cart.index');
+    Route::post('/cart/add',             [CartController::class,  'add'])->name('cart.add');
+    Route::patch('/cart/{productId}',    [CartController::class,  'update'])->name('cart.update');
+    Route::delete('/cart/{productId}',   [CartController::class,  'remove'])->name('cart.remove');
+    Route::get('/checkout',              [OrderController::class, 'checkout'])->name('cart.checkout');
+    Route::post('/cart/pay', [CartController::class, 'pay']);
+    Route::get('/recipes', [RecipesController::class, 'index']);
+    Route::post('/recipes', [RecipesController::class, 'store']);
+});
 
 Route::get('/mailable', function () {
 

@@ -31,28 +31,6 @@ const displayedWeather = computed<WeatherData | null>(() => {
     return w;
 });
 
-const weatherTranslations: Record<string, string> = {
-  "clear sky": "selge taevas",
-  "few clouds": "vähesed pilved",
-  "scattered clouds": "hajusad pilved",
-  "broken clouds": "pilves",
-  "overcast clouds": "lauspilves",
-  "light rain": "kerge vihm",
-  "moderate rain": "mõõdukas vihm",
-  "heavy intensity rain": "tugev vihm",
-  "shower rain": "hoovihm",
-  thunderstorm: "äike",
-  snow: "lumi",
-  mist: "udu",
-  fog: "udu",
-  haze: "vine",
-};
-
-const getWeatherText = (desc?: string) =>
-  desc
-    ? weatherTranslations[desc.toLowerCase()] ?? desc
-    : "";
-
 async function searchCity() {
     const city = searchQuery.value.trim();
     if (!city) return;
@@ -127,7 +105,7 @@ function windDirection(deg: number): string {
                         class="rounded-lg bg-green-600 px-4 py-2 text-sm text-white"
                         @click="searchCity"
                     >
-                        {{ searchLoading ? '...' : 'Otsi' }}
+                        {{ searchLoading ? '...' : 'Search' }}
                     </button>
                 </div>
             </div>
@@ -152,11 +130,11 @@ function windDirection(deg: number): string {
                                 </h2>
 
                                 <p class="capitalize opacity-90">
-                                    {{ getWeatherText(displayedWeather.weather[0].description) }}
+                                    {{ displayedWeather.weather[0].description }}
                                 </p>
 
                                 <p class="text-sm opacity-70">
-                                    Tundub nagu {{ Math.round(displayedWeather.main.feels_like) }}°C
+                                    Feels like {{ Math.round(displayedWeather.main.feels_like) }}°C
                                 </p>
                             </div>
 

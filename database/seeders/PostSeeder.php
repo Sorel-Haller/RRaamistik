@@ -8,11 +8,17 @@ use Illuminate\Database\Seeder;
 
 class PostSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        Post::factory()->count(100)->create();
+        Post::firstOrCreate(
+            ['title' => 'Welcome to the Blog'],
+            [
+                'content'   => 'This is the first post on our blog. Stay tuned for more updates!',
+                'published' => true,
+                'author_id' => 1,
+            ]
+        );
+
+        Post::factory()->count(20)->create();
     }
 }

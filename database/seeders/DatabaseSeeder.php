@@ -24,10 +24,11 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-            //AuthorSeeder::class,
-            //PostSeeder::class,
+            AuthorSeeder::class,
+            PostSeeder::class,
             ProductSeeder::class,
             ReviewSeeder::class,
+            RecipesSeeder::class,
         ]);
     }
 }

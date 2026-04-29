@@ -36,7 +36,7 @@ const submit = () => {
     <Head title="Create Post" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="max-w-2xl mx-auto p-6 flex flex-col gap-6">
+        <div class="w-2/3 min-w-[300px] mx-auto p-6 flex flex-col gap-6">
             <h1 class="text-2xl font-semibold">Create New Post</h1>
 
             <form @submit.prevent="submit" class="flex flex-col gap-4">
