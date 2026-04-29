@@ -185,13 +185,13 @@ function windDirection(deg: number): string {
                     </a>
 
                     <!-- API -->
-                    <a href="/api"
+                    <a href="/recipes"
                        class="rounded-2xl border p-5 hover:shadow-md transition bg-white dark:bg-neutral-900">
-                        <p class="text-lg font-semibold">API</p>
-                        <p class="text-sm opacity-60">Explore your API</p>
+                        <p class="text-lg font-semibold">Recipes</p>
+                        <p class="text-sm opacity-60">Explore recipes</p>
 
                         <div class="mt-3 text-primary text-sm font-medium">
-                            Go to API →
+                            View Recipes →
                         </div>
                     </a>
                 </div>

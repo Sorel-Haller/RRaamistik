@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head, router } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 
 type Recipe = {
@@ -10,6 +10,7 @@ type Recipe = {
     cooking_time: number;
     difficulty: string;
     image?: string;
+    servings?: number;
 };
 
 const props = defineProps<{
@@ -27,139 +28,130 @@ const difficulty = ref(props.filters.difficulty || 'all');
 const sort = ref(props.filters.sort || 'latest');
 const limit = ref(props.filters.limit || 12);
 
-watch([search, difficulty, sort, limit], () => {
-    router.get('/recipes', {
-        search: search.value,
-        difficulty: difficulty.value,
-        sort: sort.value,
-        limit: limit.value,
-    }, { preserveState: true, replace: true });
-});
-
-const showForm = ref(false);
-
-const form = ref({
-    title: '',
-    image: '',
-    description: '',
-    cooking_time: 0,
-    difficulty: 'beginner',
-});
-
-const submit = () => {
-    router.post('/recipes', form.value, {
-        onSuccess: () => {
-            showForm.value = false;
-            form.value = {
-                title: '',
-                image: '',
-                description: '',
-                cooking_time: 0,
-                difficulty: 'beginner',
-            };
-        },
-    });
-};
+/*
+Better watch() version:
+- preserveScroll improves UX
+- cleaner formatting
+*/
+watch(
+    [search, difficulty, sort, limit],
+    () => {
+        router.get(
+            '/recipes',
+            {
+                search: search.value,
+                difficulty: difficulty.value,
+                sort: sort.value,
+                limit: limit.value,
+            },
+            {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true,
+            }
+        );
+    }
+);
 </script>
 
 <template>
-<Head title="Recipes" />
+    <Head title="Recipes" />
 
-<AppLayout>
-<div class="p-6 flex flex-col gap-6">
+    <AppLayout>
+        <div class="p-6 flex flex-col gap-6">
 
-    <!-- HEADER -->
-    <div class="flex justify-between items-center">
-        <div>
-            <h1 class="text-2xl font-bold">Recipes</h1>
-        </div>
-
-        <button
-            @click="showForm = !showForm"
-            class="bg-green-600 text-white px-4 py-2 rounded-lg"
-        >
-            Add New Recipe
-        </button>
-    </div>
-
-    <!-- FILTER BAR -->
-    <div class="flex flex-wrap gap-3 items-center bg-white dark:bg-neutral-900 p-4 rounded-xl border">
-
-        <input
-            id="search"
-            v-model="search"
-            placeholder="Search recipes..."
-            class="border px-3 py-2 rounded w-60"
-        />
-
-        <select v-model="difficulty" class="border px-3 py-2 rounded">
-            <option value="all">All</option>
-            <option value="beginner">Beginner</option>
-            <option value="intermediate">Intermediate</option>
-            <option value="advanced">Advanced</option>
-        </select>
-
-        <select v-model="sort" class="border px-3 py-2 rounded">
-            <option value="latest">Newest</option>
-            <option value="time">Cooking Time</option>
-        </select>
-
-        <select v-model="limit" class="border px-3 py-2 rounded">
-            <option :value="6">6</option>
-            <option :value="12">12</option>
-            <option :value="24">24</option>
-        </select>
-    </div>
-
-    <!-- FORM -->
-    <div v-if="showForm" class="border rounded-xl p-4 bg-white dark:bg-neutral-900 flex flex-col gap-3 max-w-lg">
-        <input v-model="form.title" placeholder="Title" class="border px-3 py-2 rounded" />
-        <input v-model="form.image" placeholder="Image URL" class="border px-3 py-2 rounded" />
-        <textarea v-model="form.description" placeholder="Description" class="border px-3 py-2 rounded" />
-        <input v-model="form.cooking_time" type="number" placeholder="Cooking time" class="border px-3 py-2 rounded" />
-
-        <select v-model="form.difficulty" class="border px-3 py-2 rounded">
-            <option value="beginner">Beginner</option>
-            <option value="intermediate">Intermediate</option>
-            <option value="advanced">Advanced</option>
-        </select>
-
-        <button @click="submit" class="bg-black text-white py-2 rounded">
-            Save Recipe
-        </button>
-    </div>
-
-    <!-- GRID -->
-    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-
-        <div
-            v-for="recipe in recipes"
-            :key="recipe.id"
-            class="rounded-xl border bg-white dark:bg-neutral-900 shadow-sm overflow-hidden flex flex-col"
-        >
-            <img
-                :src="recipe.image || 'https://picsum.photos/400/300'"
-                class="w-full h-44 object-cover"
-            />
-
-            <div class="p-4 flex flex-col gap-2 flex-1">
-                <h3 class="font-semibold">{{ recipe.title }}</h3>
-
-                <p class="text-sm text-muted-foreground line-clamp-2">
-                    {{ recipe.description }}
-                </p>
-
-                <div class="flex justify-between text-xs mt-2">
-                    <span>{{ recipe.cooking_time }} mins</span>
-                    <span class="uppercase text-orange-500">
-                        {{ recipe.difficulty }}
-                    </span>
+            <!-- HEADER -->
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold">Recipes</h1>
+                    <p class="text-sm text-gray-500">
+                        Manage your recipe collection
+                    </p>
                 </div>
+
+                <Link
+                    href="/recipes/create"
+                    class="bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-xl font-medium"
+                >
+                    + Add New Recipe
+                </Link>
             </div>
+
+            <!-- FILTER BAR -->
+            <div
+                class="flex flex-wrap gap-3 items-center bg-white dark:bg-neutral-900 p-4 rounded-xl border"
+            >
+                <input
+                    v-model="search"
+                    placeholder="Search recipes..."
+                    class="border px-4 py-2 rounded-lg w-64"
+                />
+
+                <select
+                    v-model="difficulty"
+                    class="border px-4 py-2 rounded-lg"
+                >
+                    <option value="all">All Difficulty</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                </select>
+
+                <select
+                    v-model="sort"
+                    class="border px-4 py-2 rounded-lg"
+                >
+                    <option value="latest">Newest</option>
+                    <option value="time">Cooking Time</option>
+                </select>
+
+                <select
+                    v-model="limit"
+                    class="border px-4 py-2 rounded-lg"
+                >
+                    <option :value="6">6</option>
+                    <option :value="12">12</option>
+                    <option :value="24">24</option>
+                </select>
+            </div>
+
+            <!-- GRID -->
+            <div
+                class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+            >
+                <Link
+                    v-for="recipe in recipes"
+                    :key="recipe.id"
+                    :href="`/recipes/${recipe.id}`"
+                    class="rounded-2xl border bg-white dark:bg-neutral-900 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition"
+                >
+                    <img
+                        :src="recipe.image || 'https://picsum.photos/400/300'"
+                        class="w-full h-48 object-cover"
+                    />
+
+                    <div class="p-4 flex flex-col gap-3 flex-1">
+                        <h3 class="font-semibold text-lg">
+                            {{ recipe.title }}
+                        </h3>
+
+                        <p class="text-sm text-gray-500 line-clamp-2">
+                            {{ recipe.description }}
+                        </p>
+
+                        <div class="flex justify-between text-sm mt-auto">
+                            <span>
+                                {{ recipe.cooking_time }} mins
+                            </span>
+
+                            <span class="uppercase text-orange-500 font-medium">
+                                {{ recipe.difficulty }}
+                            </span>
+                        </div>
+                    </div>
+                </Link>
+            </div>
+
         </div>
-
-    </div>
-
-</div>
-</AppLayout>
+    </AppLayout>
 </template>

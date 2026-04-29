@@ -18,6 +18,14 @@ return new class extends Migration
             $table->text('description');
             $table->integer('cooking_time');
             $table->string('difficulty');
+            $table->integer('prep_time')->nullable();
+            $table->integer('servings')->nullable();
+            $table->integer('calories')->nullable();
+            $table->integer('protein')->nullable();
+            $table->integer('carbs')->nullable();
+            $table->integer('fat')->nullable();
+            $table->json('instructions')->nullable();
+            $table->json('ingredients')->nullable();
             $table->timestamps();
         });
     }
