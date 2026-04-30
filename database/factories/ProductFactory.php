@@ -18,11 +18,12 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->word(),
-            'description' => $this->faker->paragraph(),
-            'price' => $this->faker->randomFloat(2, 1, 1000),
-            'sku' => $this->faker->unique()->bothify('SKU-####-????'),
-            'stock_quantity' => $this->faker->numberBetween(0, 1000),
+            'name' => $this->faker->words(3, true),
+            'description' => $this->faker->sentence(12),
+            'price' => $this->faker->randomFloat(2, 10, 500), // Hind vahemikus 10-500
+            'sku' => strtoupper($this->faker->unique()->bothify('??-###')), // Genereerib suvalise SKU nt AB-123
+            'stock_quantity' => $this->faker->numberBetween(0, 100),
+            'image' => 'https://picsum.photos/seed/' . rand(1, 1000) . '/400/300',
         ];
     }
 }

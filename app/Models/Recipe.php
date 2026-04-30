@@ -9,19 +9,9 @@ class Recipe extends Model
     protected $table = 'recipes';
 
     protected $fillable = [
-        'title',
-        'image',
-        'description',
-        'difficulty',
-        'cooking_time',
-        'prep_time',
-        'servings',
-        'calories',
-        'protein',
-        'carbs',
-        'fat',
-        'ingredients',
-        'instructions',
+        'title', 'description', 'cooking_time', 'prep_time', 'difficulty', 
+        'image', 'servings', 'calories', 'protein', 'carbs', 'fat', 
+        'ingredients', 'instructions'
     ];
 
     protected $casts = [

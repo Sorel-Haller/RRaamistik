@@ -59,8 +59,6 @@ watch(
 
     <AppLayout>
         <div class="p-6 flex flex-col gap-6">
-
-            <!-- HEADER -->
             <div class="flex justify-between items-center">
                 <div>
                     <h1 class="text-2xl font-bold">Recipes</h1>
@@ -76,8 +74,6 @@ watch(
                     + Add New Recipe
                 </Link>
             </div>
-
-            <!-- FILTER BAR -->
             <div
                 class="flex flex-wrap gap-3 items-center bg-white dark:bg-neutral-900 p-4 rounded-xl border"
             >
@@ -91,32 +87,32 @@ watch(
                     v-model="difficulty"
                     class="border px-4 py-2 rounded-lg"
                 >
-                    <option value="all" class="bg-gray-400 dark:bg-gray-700 text-black dark:text-white">All Difficulty</option>
-                    <option value="beginner" class="bg-gray-400 dark:bg-gray-700 text-black dark:text-white">Beginner</option>
-                    <option value="intermediate" class="bg-gray-400 dark:bg-gray-700 text-black dark:text-white">Intermediate</option>
-                    <option value="advanced" class="bg-gray-400 dark:bg-gray-700 text-black dark:text-white">Advanced</option>
+                    <option value="all" class="bg-gray-100 dark:bg-gray-700 text-black dark:text-white">All Difficulty</option>
+                    <option value="beginner" class="bg-gray-100 dark:bg-gray-700 text-black dark:text-white">Beginner</option>
+                    <option value="intermediate" class="bg-gray-100 dark:bg-gray-700 text-black dark:text-white">Intermediate</option>
+                    <option value="advanced" class="bg-gray-100 dark:bg-gray-700 text-black dark:text-white">Advanced</option>
                 </select>
 
                 <select
                     v-model="sort"
                     class="border px-4 py-2 rounded-lg"
+                    
                 >
-                    <option value="all" class="bg-gray-400 dark:bg-gray-700 text-black dark:text-white">Sort</option>
-                    <option value="latest" class="bg-gray-400 dark:bg-gray-700 text-black dark:text-white">Newest</option>
-                    <option value="time" class="bg-gray-400 dark:bg-gray-700 text-black dark:text-white">Cooking Time</option>
+                    <option value="all" class="bg-gray-100 dark:bg-gray-700 text-black dark:text-white">Sort</option>
+                    <option value="latest" class="bg-gray-100 dark:bg-gray-700 text-black dark:text-white">Newest</option>
+                    <option value="time" class="bg-gray-100 dark:bg-gray-700 text-black dark:text-white">Cooking Time</option>
                 </select>
 
                 <select
                     v-model="limit"
                     class="border px-4 py-2 rounded-lg"
                 >
-                    <option :value="6" class="bg-gray-400 dark:bg-gray-700 text-black dark:text-white">6</option>
-                    <option :value="12" class="bg-gray-400 dark:bg-gray-700 text-black dark:text-white">12</option>
-                    <option :value="24" class="bg-gray-400 dark:bg-gray-700 text-black dark:text-white">24</option>
+                    <option :value="6" class="bg-gray-100 dark:bg-gray-700 text-black dark:text-white">6</option>
+                    <option :value="12" class="bg-gray-100 dark:bg-gray-700 text-black dark:text-white">12</option>
+                    <option :value="24" class="bg-gray-100 dark:bg-gray-700 text-black dark:text-white">24</option>
                 </select>
             </div>
 
-            <!-- GRID -->
             <div
                 class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
             >

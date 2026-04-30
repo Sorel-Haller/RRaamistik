@@ -38,11 +38,8 @@ const { recipe } = defineProps<{
 
 <template>
     <Head :title="recipe.title" />
-
     <AppLayout>
         <div class="p-6 flex flex-col gap-6">
-
-            <!-- TOP BAR -->
             <div class="flex items-center justify-between">
                 <Link
                     href="/recipes"
@@ -50,58 +47,38 @@ const { recipe } = defineProps<{
                 >
                     ← Back to Recipes
                 </Link>
-
             </div>
-
-            <!-- MAIN CARD -->
             <div
-                class="border rounded-2xl bg-white dark:bg-neutral-900 overflow-hidden"
-            >
-                <!-- HERO SECTION -->
-                <div
-                    class="p-6 border-b grid lg:grid-cols-[380px_1fr] gap-8 items-center"
-                >
-                    <!-- IMAGE -->
+                class="border rounded-2xl bg-white dark:bg-neutral-900 overflow-hidden">
+                <div class="p-6 border-b grid lg:grid-cols-[380px_1fr] gap-8 items-center"                >
                     <div>
                         <img
                             :src="recipe.image || 'https://picsum.photos/800/500'"
                             class="w-full h-[250px] object-cover rounded-2xl"
                         />
                     </div>
-
-                    <!-- CONTENT -->
                     <div class="space-y-5">
-                        <!-- META -->
                         <div class="flex flex-wrap items-center gap-4">
                             <span
                                 class="px-3 py-1 rounded-full text-sm font-semibold bg-orange-100 text-orange-500 uppercase"
                             >
                                 {{ recipe.difficulty }}
                             </span>
-
                             <span class="text-sm text-gray-500">
                                 ⏱ {{ recipe.cooking_time }} mins
                             </span>
-
                             <span class="text-sm text-gray-500">
                                 👥 {{ recipe.servings || 4 }} Servings
                             </span>
                         </div>
-
-                        <!-- TITLE -->
                         <h1 class="text-4xl font-bold leading-tight">
                             {{ recipe.title }}
                         </h1>
-
-                        <!-- DESCRIPTION -->
                         <p class="text-gray-500 leading-relaxed text-lg">
                             {{ recipe.description }}
                         </p>
-
-                        <!-- NUTRITION -->
                         <div
-                            class="grid grid-cols-2 md:grid-cols-4 gap-6 pt-4 border-t"
-                        >
+                            class="grid grid-cols-2 md:grid-cols-4 gap-6 pt-4 border-t">
                             <div>
                                 <p class="text-xs font-semibold text-gray-400 uppercase">
                                     Calories
@@ -110,7 +87,6 @@ const { recipe } = defineProps<{
                                     {{ recipe.calories || 0 }} kcal
                                 </p>
                             </div>
-
                             <div>
                                 <p class="text-xs font-semibold text-gray-400 uppercase">
                                     Protein
@@ -119,7 +95,6 @@ const { recipe } = defineProps<{
                                     {{ recipe.protein || '0g' }}
                                 </p>
                             </div>
-
                             <div>
                                 <p class="text-xs font-semibold text-gray-400 uppercase">
                                     Carbs
@@ -128,7 +103,6 @@ const { recipe } = defineProps<{
                                     {{ recipe.carbs || '0g' }}
                                 </p>
                             </div>
-
                             <div>
                                 <p class="text-xs font-semibold text-gray-400 uppercase">
                                     Fat
@@ -140,11 +114,7 @@ const { recipe } = defineProps<{
                         </div>
                     </div>
                 </div>
-
-                <!-- BOTTOM SECTION -->
                 <div class="p-6 grid lg:grid-cols-2 gap-6">
-
-                    <!-- INGREDIENTS -->
                     <div
                         class="border rounded-2xl p-6"
                     >
@@ -152,13 +122,10 @@ const { recipe } = defineProps<{
                             <h2 class="text-2xl font-bold">
                                 Ingredients
                             </h2>
-
                         </div>
-
                         <div
                             v-if="recipe.ingredients?.length"
-                            class="space-y-4"
-                        >
+                            class="space-y-4">
                             <div
                                 v-for="(ingredient, index) in recipe.ingredients"
                                 :key="index"
@@ -168,7 +135,6 @@ const { recipe } = defineProps<{
                                     type="checkbox"
                                     class="mt-1 rounded"
                                 />
-
                                 <div class="flex gap-2 text-base">
                                     <span class="font-semibold">
                                         {{ ingredient.amount }}
@@ -180,7 +146,6 @@ const { recipe } = defineProps<{
                                 </div>
                             </div>
                         </div>
-
                         <div
                             v-else
                             class="text-gray-400"
@@ -188,48 +153,37 @@ const { recipe } = defineProps<{
                             No ingredients added
                         </div>
                     </div>
-
-                    <!-- INSTRUCTIONS -->
                     <div
                         class="border rounded-2xl p-6"
                     >
                         <h2 class="text-2xl font-bold mb-5">
                             Instructions
                         </h2>
-
                         <div
                             v-if="recipe.instructions?.length"
-                            class="space-y-6"
-                        >
+                            class="space-y-6">
+
                             <div
                                 v-for="(step, index) in recipe.instructions"
                                 :key="index"
-                                class="flex gap-4"
-                            >
-                                <!-- STEP NUMBER -->
+                                class="flex gap-4">
                                 <div
-                                    class="w-9 h-9 rounded-full border flex items-center justify-center text-sm font-semibold text-indigo-600 shrink-0"
-                                >
+                                    class="w-9 h-9 rounded-full border flex items-center justify-center text-sm font-semibold text-indigo-600 shrink-0">
                                     {{ index + 1 }}
                                 </div>
-
-                                <!-- STEP CONTENT -->
                                 <div class="space-y-1">
                                     <h3 class="font-semibold text-lg">
                                         {{ step.title }}
                                     </h3>
-
                                     <p class="text-gray-500 leading-relaxed">
                                         {{ step.description }}
                                     </p>
                                 </div>
                             </div>
                         </div>
-
                         <div
                             v-else
-                            class="text-gray-400"
-                        >
+                            class="text-gray-400">
                             No instructions added
                         </div>
                     </div>
