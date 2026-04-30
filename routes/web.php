@@ -50,7 +50,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/products/{products}', [ProductController::class, 'destroy'])
         ->name('products.destroy');
 
-
     Route::get('/cart', [CartController::class, 'index'])
         ->name('cart.index');
     Route::post('/cart/add', [CartController::class, 'add'])
@@ -63,6 +62,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('cart.checkout');
     Route::post('/cart/pay', [CartController::class, 'pay'])
         ->name('cart.pay');
+    Route::get('/products/success/{order}', [CartController::class, 'success'])
+        ->name('checkout.success');
 
     Route::get('/recipes', [RecipeController::class, 'index'])
         ->name('recipes.index');

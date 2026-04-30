@@ -111,7 +111,7 @@ const deletePost = (postId: number) => {
 
         <!-- NEW POST BUTTON -->
           <Link :href="create.url()">
-            <Button class="bg-primary text-white">
+            <Button class="bg-green-600 hover:bg-green-700 text-white">
               Add New Post
             </Button>
           </Link>
@@ -198,6 +198,7 @@ const deletePost = (postId: number) => {
         @update:page="(page) => router.get(index().url, { page: page })"
       >
         <PaginationContent v-slot="{ items }" class="flex items-center gap-1">
+          <PaginationFirst />
           <PaginationPrevious />
 
           <template v-for="(item, index) in items" :key="index">
@@ -218,6 +219,7 @@ const deletePost = (postId: number) => {
           </template>
 
           <PaginationNext />
+          <PaginationLast />
         </PaginationContent>
       </Pagination>
 

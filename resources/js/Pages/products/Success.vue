@@ -5,16 +5,16 @@ const props = defineProps({ order: Object });
 
 <template>
     <Head title="Order Confirmed" />
-    <div class="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 max-w-lg w-full p-10 text-center">
+    <div class="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center px-4">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-600 max-w-lg w-full p-10 text-center">
             <div class="text-6xl mb-4">✅</div>
-            <h1 class="text-2xl font-bold text-gray-800 mb-2">Payment Successful!</h1>
-            <p class="text-gray-500 mb-6">
+            <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Payment Successful!</h1>
+            <p class="text-gray-500 dark:text-gray-300 mb-6">
                 Thank you for your order, <strong>{{ order.first_name }}</strong>!
                 A confirmation will be sent to <strong>{{ order.email }}</strong>.
             </p>
 
-            <div class="bg-gray-50 rounded-xl p-4 text-left mb-6 space-y-2 text-sm">
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 text-left mb-6 space-y-2 text-sm">
                 <div class="flex justify-between">
                     <span class="text-gray-500">Order #</span>
                     <span class="font-mono font-medium">#{{ order.id }}</span>
@@ -47,7 +47,7 @@ const props = defineProps({ order: Object });
                 </div>
             </div>
 
-            <Link href="/products" class="block w-full bg-primary hover:opacity-90 text-white font-semibold py-3 rounded-lg transition">
+            <Link href="/products" class="block w-full bg-primary dark:bg-green-600 hover:opacity-90 text-white font-semibold py-3 rounded-lg transition">
                 Back to Shop →
             </Link>
         </div>

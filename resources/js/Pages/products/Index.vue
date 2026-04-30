@@ -103,18 +103,6 @@ const deleteProduct = (id: number) => {
                             >
                                 {{ addedId === product.id ? '✓ Added' : 'Add to cart' }}
                             </Button>
-
-                            <DropdownMenu>
-                                <DropdownMenuTrigger as-child>
-                                    <Button size="icon" variant="ghost"><MoreVertical class="w-4 h-4" /></Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem class="text-destructive" @click="deleteProduct(product.id)">
-                                        Delete
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
                         </div>
                     </div>
                 </div>

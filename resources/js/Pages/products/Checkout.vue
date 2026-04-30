@@ -71,10 +71,10 @@ async function submit() {
 
 <template>
     <Head title="Checkout" />
-    <div class="min-h-screen bg-gray-50">
+    <div class="min-h-screen bg-gray-50 dark:bg-gray-800 dark:text-gray-300">
         <div class="max-w-5xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
             <Link href="/cart" class="text-primary hover:underline text-sm mb-6 inline-block">← Back to Cart</Link>
-            <h1 class="text-3xl font-bold text-gray-800 mb-8">Checkout</h1>
+            <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-8">Checkout</h1>
 
             <div v-if="paymentError" class="bg-red-50 border border-red-300 text-red-700 rounded-xl p-4 mb-6 flex items-center gap-3">
                 <span>❌</span>
@@ -94,7 +94,7 @@ async function submit() {
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Order Summary -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div class="bg-white dark:bg-gray-700 dark:text-white rounded-xl shadow-sm border border-gray-100 p-6">
                     <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
                     <div class="space-y-3">
                         <div v-for="item in cartItems" :key="item.product.id" class="flex justify-between items-center">
@@ -119,33 +119,33 @@ async function submit() {
                 </div>
 
                 <!-- Payment Form -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div class="bg-white dark:bg-gray-700 dark:text-white rounded-xl shadow-sm border border-gray-100 p-6">
                     <h2 class="text-xl font-semibold mb-4">Payment Details</h2>
                     <form @submit.prevent="submit" class="space-y-4">
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                                <input v-model="form.first_name" type="text" required class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-primary focus:border-primary" />
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">First Name</label>
+                                <input v-model="form.first_name" type="text" required class="w-full rounded-lg border-gray-300 dark:bg-gray-600 dark:border-gray-500 dark:text-white shadow-sm focus:ring-primary focus:border-primary" />
                                 <p v-if="form.errors.first_name" class="text-red-500 text-xs mt-1">{{ form.errors.first_name }}</p>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                                <input v-model="form.last_name" type="text" required class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-primary focus:border-primary" />
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Last Name</label>
+                                <input v-model="form.last_name" type="text" required class="w-full rounded-lg border-gray-300 dark:bg-gray-600 dark:border-gray-500 dark:text-white shadow-sm focus:ring-primary focus:border-primary" />
                                 <p v-if="form.errors.last_name" class="text-red-500 text-xs mt-1">{{ form.errors.last_name }}</p>
                             </div>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                            <input v-model="form.email" type="email" required class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-primary focus:border-primary" />
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+                            <input v-model="form.email" type="email" required class="w-full rounded-lg border-gray-300 dark:bg-gray-600 dark:border-gray-500 dark:text-white shadow-sm focus:ring-primary focus:border-primary" />
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                            <input v-model="form.phone" type="tel" required class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-primary focus:border-primary" />
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone</label>
+                            <input v-model="form.phone" type="tel" required class="w-full rounded-lg border-gray-300 dark:bg-gray-600 dark:border-gray-500 dark:text-white shadow-sm focus:ring-primary focus:border-primary" />
                         </div>
 
                         <!-- Payment Method -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-3">Payment Method</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Payment Method</label>
                             <div class="grid grid-cols-2 gap-3">
                                 <label :class="['flex items-center justify-center p-4 border-2 rounded-xl cursor-pointer transition', form.payment_method === 'stripe' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-gray-300']">
                                     <input type="radio" v-model="form.payment_method" value="stripe" class="sr-only" />
@@ -153,14 +153,6 @@ async function submit() {
                                         <div class="text-2xl mb-1">💳</div>
                                         <span class="font-medium text-sm">Credit Card</span>
                                         <p class="text-xs text-gray-400 mt-0.5">via Stripe</p>
-                                    </div>
-                                </label>
-                                <label :class="['flex items-center justify-center p-4 border-2 rounded-xl cursor-pointer transition', form.payment_method === 'paypal' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-gray-300']">
-                                    <input type="radio" v-model="form.payment_method" value="paypal" class="sr-only" />
-                                    <div class="text-center">
-                                        <div class="text-2xl mb-1">🅿️</div>
-                                        <span class="font-medium text-sm">PayPal</span>
-                                        <p class="text-xs text-gray-400 mt-0.5">Simulation</p>
                                     </div>
                                 </label>
                             </div>
@@ -176,10 +168,6 @@ async function submit() {
                                 <p>❌ Decline: <code class="bg-amber-100 px-1 rounded">4000 0000 0000 0002</code></p>
                                 <p class="text-amber-600 mt-1">Any future date, any 3-digit CVC</p>
                             </div>
-                        </div>
-
-                        <div v-if="form.payment_method === 'paypal'" class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-700">
-                            ℹ️ PayPal is a simulation — payment will be marked as successful automatically.
                         </div>
 
                         <button type="submit" :disabled="form.processing || paymentStatus === 'processing'"
