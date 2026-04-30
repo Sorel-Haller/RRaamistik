@@ -18,7 +18,6 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'google_id',
         'name',
         'email',
         'password',
@@ -32,8 +31,6 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        'google_token',
-        'google_refresh_token',
     ];
 
     /**

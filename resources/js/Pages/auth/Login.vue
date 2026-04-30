@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import InputError from '@/components/InputError.vue';
 import TextLink from '@/components/TextLink.vue';
-import GoogleLogo from '@/components/GoogleLogo.vue';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthBase from '@/layouts/AuthLayout.vue';
-import { register, googleLogin } from '@/routes';
 import { request } from '@/routes/password';
 import { store } from '@/actions/App/Http/Controllers/Auth/AuthenticatedSessionController';
 import { Head, useForm } from '@inertiajs/vue3';
@@ -108,22 +106,6 @@ const submit = () => {
                     Log in
                 </Button>
 
-                <Button
-                    variant="secondary"
-                    as="a"
-                    :href="googleLogin().url"
-                    type="button"
-                    class="mt-2 w-full"
-                    tabindex="5"
-                    :disabled="form.processing"
-                >
-                    <LoaderCircle
-                        v-if="form.processing"
-                        class="h-4 w-4 animate-spin"
-                    />
-                    <GoogleLogo />
-                    Sign in with Google
-                </Button>
             </div>
 
             <div class="text-center text-sm">

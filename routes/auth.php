@@ -37,25 +37,6 @@ Route::middleware('guest')->group(function () {
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
 
-    Route::get('/auth/redirect', function () {
-        return Socialite::driver('google')->redirect();
-    })->name('google-login');
-    
-    Route::get('/auth/callback', function () {
-        $googleUser = Socialite::driver('google')->user();
-        $user = User::updateOrCreate([
-                'google_id' => $googleUser->id,
-            ], [
-                'name' => $googleUser->name,
-                'email' => $googleUser->email,
-                'google_token' => $googleUser->token,
-                'google_refresh_token' => $googleUser->refreshToken,
-            ]);
-        
-            Auth::login($user);
-        
-            return redirect('/dashboard');
-    });
 });
 
 Route::middleware('auth')->group(function () {
