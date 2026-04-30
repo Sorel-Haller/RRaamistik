@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { request } from '@/routes/password';
+import { register } from '@/routes';
 import { store } from '@/actions/App/Http/Controllers/Auth/AuthenticatedSessionController';
 import { Head, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
@@ -36,14 +37,21 @@ const submit = () => {
     >
         <Head title="Log in" />
 
-        <div v-if="status" class="mb-4 text-center text-sm font-medium text-green-600">
+        <div
+            v-if="status"
+            class="mb-4 text-center text-sm font-medium text-green-600"
+        >
             {{ status }}
         </div>
 
-        <form @submit.prevent="submit" class="flex flex-col gap-6">
+        <form
+            @submit.prevent="submit"
+            class="flex flex-col gap-6"
+        >
             <div class="grid gap-6">
                 <div class="grid gap-2">
                     <Label for="email">Email address</Label>
+
                     <Input
                         id="email"
                         v-model="form.email"
@@ -54,12 +62,14 @@ const submit = () => {
                         placeholder="email@example.com"
                         :tabindex="1"
                     />
+
                     <InputError :message="form.errors.email" />
                 </div>
 
                 <div class="grid gap-2">
                     <div class="flex items-center justify-between">
                         <Label for="password">Password</Label>
+
                         <TextLink
                             v-if="canResetPassword"
                             :href="request()"
@@ -79,16 +89,21 @@ const submit = () => {
                         placeholder="Password"
                         :tabindex="2"
                     />
+
                     <InputError :message="form.errors.password" />
                 </div>
 
                 <div class="flex items-center justify-between">
-                    <Label for="remember" class="flex items-center space-x-3">
+                    <Label
+                        for="remember"
+                        class="flex items-center space-x-3"
+                    >
                         <Checkbox
                             id="remember"
                             v-model:checked="form.remember"
                             :tabindex="3"
                         />
+
                         <span>Remember me</span>
                     </Label>
                 </div>
@@ -103,14 +118,18 @@ const submit = () => {
                         v-if="form.processing"
                         class="h-4 w-4 animate-spin"
                     />
+
                     Log in
                 </Button>
-
             </div>
 
             <div class="text-center text-sm">
                 Don't have an account?
-                <TextLink :href="register()" :tabindex="6">
+
+                <TextLink
+                    :href="register()"
+                    :tabindex="6"
+                >
                     Sign up
                 </TextLink>
             </div>
