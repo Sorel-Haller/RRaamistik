@@ -1,20 +1,22 @@
-<script setup>
-import Checkbox from '@/Components/Checkbox.vue';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+<script setup lang="ts">
+import InputError from '@/components/InputError.vue';
+import TextLink from '@/components/TextLink.vue';
+import GoogleLogo from '@/components/GoogleLogo.vue';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import AuthBase from '@/layouts/AuthLayout.vue';
+import { register, googleLogin } from '@/routes';
+import { request } from '@/routes/password';
+import { store } from '@/actions/App/Http/Controllers/Auth/AuthenticatedSessionController';
+import { Head, useForm } from '@inertiajs/vue3';
+import { LoaderCircle } from 'lucide-vue-next';
 
-defineProps({
-    canResetPassword: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
-});
+defineProps<{
+    status?: string;
+    canResetPassword: boolean;
+}>();
 
 const form = useForm({
     email: '',
@@ -23,72 +25,113 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(route('login'), {
+    form.post(store.url(), {
         onFinish: () => form.reset('password'),
     });
 };
 </script>
 
 <template>
-    <GuestLayout>
+    <AuthBase
+        title="Log in to your account"
+        description="Enter your email and password below to log in"
+    >
         <Head title="Log in" />
 
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+        <div v-if="status" class="mb-4 text-center text-sm font-medium text-green-600">
             {{ status }}
         </div>
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
+        <form @submit.prevent="submit" class="flex flex-col gap-6">
+            <div class="grid gap-6">
+                <div class="grid gap-2">
+                    <Label for="email">Email address</Label>
+                    <Input
+                        id="email"
+                        v-model="form.email"
+                        type="email"
+                        required
+                        autofocus
+                        autocomplete="email"
+                        placeholder="email@example.com"
+                        :tabindex="1"
+                    />
+                    <InputError :message="form.errors.email" />
+                </div>
 
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autofocus
-                    autocomplete="username"
-                />
+                <div class="grid gap-2">
+                    <div class="flex items-center justify-between">
+                        <Label for="password">Password</Label>
+                        <TextLink
+                            v-if="canResetPassword"
+                            :href="request()"
+                            class="text-sm"
+                            :tabindex="5"
+                        >
+                            Forgot password?
+                        </TextLink>
+                    </div>
 
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
+                    <Input
+                        id="password"
+                        v-model="form.password"
+                        type="password"
+                        required
+                        autocomplete="current-password"
+                        placeholder="Password"
+                        :tabindex="2"
+                    />
+                    <InputError :message="form.errors.password" />
+                </div>
 
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
+                <div class="flex items-center justify-between">
+                    <Label for="remember" class="flex items-center space-x-3">
+                        <Checkbox
+                            id="remember"
+                            v-model:checked="form.remember"
+                            :tabindex="3"
+                        />
+                        <span>Remember me</span>
+                    </Label>
+                </div>
 
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="current-password"
-                />
-
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="block mt-4">
-                <label class="flex items-center">
-                    <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ms-2 text-sm text-gray-600">Remember me</span>
-                </label>
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <Link
-                    v-if="canResetPassword"
-                    :href="route('password.request')"
-                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                <Button
+                    type="submit"
+                    class="mt-4 w-full"
+                    :tabindex="4"
+                    :disabled="form.processing"
                 >
-                    Forgot your password?
-                </Link>
-
-                <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                    <LoaderCircle
+                        v-if="form.processing"
+                        class="h-4 w-4 animate-spin"
+                    />
                     Log in
-                </PrimaryButton>
+                </Button>
+
+                <Button
+                    variant="secondary"
+                    as="a"
+                    :href="googleLogin().url"
+                    type="button"
+                    class="mt-2 w-full"
+                    tabindex="5"
+                    :disabled="form.processing"
+                >
+                    <LoaderCircle
+                        v-if="form.processing"
+                        class="h-4 w-4 animate-spin"
+                    />
+                    <GoogleLogo />
+                    Sign in with Google
+                </Button>
+            </div>
+
+            <div class="text-center text-sm">
+                Don't have an account?
+                <TextLink :href="register()" :tabindex="6">
+                    Sign up
+                </TextLink>
             </div>
         </form>
-    </GuestLayout>
+    </AuthBase>
 </template>
