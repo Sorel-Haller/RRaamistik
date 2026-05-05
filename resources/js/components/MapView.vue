@@ -43,9 +43,9 @@ function submit() {
     if (modal.value?.mode === 'add') {
         router.post('/markers', form.value, {
             preserveScroll: true,
-            onSuccess: (page) => {
+            onSuccess: (page: any) => {
                 closeModal();
-                markers.value = page.props.markers;
+                markers.value = page.props.markers as Marker[];
                 renderMarkers();
             },
         });
@@ -65,8 +65,8 @@ function destroy(id: number) {
 
     router.delete(`/markers/${id}`, {
         preserveScroll: true,
-        onSuccess: (page) => {
-            markers.value = page.props.markers;
+        onSuccess: (page: any) => {
+            markers.value = page.props.markers as Marker[];
             renderMarkers();
         },
     });
