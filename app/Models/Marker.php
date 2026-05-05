@@ -6,15 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Marker extends Model
 {
+    public $timestamps = false;
+
     protected $fillable = [
         'name',
-        'latitude',
-        'longitude',
-        'description'
-    ];
-
-    protected $casts = [
-        'latitude' => 'float',
-        'longitude' => 'float',
+        'lat',
+        'lng',
+        'description',
+        'added',
+        'edited',
     ];
 }

@@ -64,15 +64,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/products/success/{order}', [CartController::class, 'success'])
         ->name('checkout.success');
 
-    Route::get('/recipes', [RecipeController::class, 'index'])
+    Route::get('/recipes',          [RecipeController::class, 'index'])
         ->name('recipes.index');
-    Route::get('/recipes/create', [RecipeController::class, 'create'])
+    Route::get('/recipes/create',   [RecipeController::class, 'create'])
         ->name('recipes.create');
-    Route::post('/recipes', [RecipeController::class, 'store'])
+    Route::post('/recipes',         [RecipeController::class, 'store'])
         ->name('recipes.store');
     Route::get('/recipes/{recipe}', [RecipeController::class, 'show'])
         ->name('recipes.show');
-});
+    
+    });
 
 Route::get('/mailable', function () {
 

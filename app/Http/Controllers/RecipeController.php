@@ -9,102 +9,89 @@ use Inertia\Inertia;
 
 class RecipeController extends Controller
 {
-    /**
-     * Display a listing of recipes
-     */
+    /** GET /recipes */
     public function index(Request $request)
     {
-        $cacheKey = 'recipes_' . md5(json_encode($request->all()));
-
-        $recipes = Cache::remember($cacheKey, 60, function () use ($request) {
-            $query = Recipe::query();
-
-            if ($request->search) {
-                $query->where(function ($q) use ($request) {
-                    $q->where('title', 'like', "%{$request->search}%")
-                        ->orWhere('description', 'like', "%{$request->search}%");
-                });
-            }
-
-            if ($request->difficulty && $request->difficulty !== 'all') {
-                $query->where('difficulty', $request->difficulty);
-            }
-
-            if ($request->sort === 'latest') {
-                $query->latest();
-            }
-
-            if ($request->sort === 'time') {
-                $query->orderBy('cooking_time');
-            }
-
-            if ($request->limit) {
-                $query->limit((int) $request->limit);
-            }
-
-            return $query->get();
-        });
+        $filters = $request->only(['search', 'difficulty', 'sort', 'limit']);
+        $recipes = $this->queryRecipes($request);
 
         return Inertia::render('recipes/Index', [
-            'recipes' => $recipes ?? [],
-            'filters' => $request->only([
-                'search',
-                'difficulty',
-                'sort',
-                'limit',
-            ]),
+            'recipes' => $recipes,
+            'filters' => $filters,
         ]);
     }
 
-    /**
-     * Show create page
-     */
+    /** GET /recipes/create */
     public function create()
     {
         return Inertia::render('recipes/Create');
     }
 
-    /**
-     * Store new recipe
-     */
+    /** POST /recipes */
     public function store(Request $request)
     {
-    $data = $request->validate([
-        'title' => 'required|string|max:255',
-        'image' => 'nullable|string',
-        'description' => 'required|string',
+        $validated = $request->validate([
+            'title'        => 'required|string|max:255',
+            'image'        => 'nullable|url',
+            'description'  => 'required|string',
+            'instructions' => 'required|string',
+            'calories'     => 'nullable|integer|min:0',
+            'difficulty'   => 'required|in:beginner,intermediate,advanced',
+        ]);
 
-        'difficulty' => 'required|in:beginner,intermediate,advanced',
-
-        'cooking_time' => 'required|integer|min:1',
-        'prep_time' => 'nullable|integer',
-        'servings' => 'nullable|integer',
-
-        'calories' => 'nullable|integer',
-        'protein' => 'nullable|string',
-        'carbs' => 'nullable|string',
-        'fat' => 'nullable|string',
-
-        'ingredients' => 'nullable|array',
-        'instructions' => 'nullable|array',
-    ]);
-
-        Recipe::create($data);
+        Recipe::create($validated);
 
         Cache::flush();
 
-        return redirect()
-            ->route('recipes.index')
-            ->with('success', 'Recipe created successfully!');
+        return redirect()->route('recipes.index');
     }
 
-    /**
-     * Show single recipe page
-     */
     public function show(Recipe $recipe)
     {
-        return Inertia::render('recipes/Show', [
-            'recipe' => $recipe,
+        return Inertia::render('recipes/Show', ['recipe' => $recipe]);
+    }
+
+    public function apiIndex(Request $request)
+    {
+        $cacheKey = 'recipes_api_' . md5($request->getQueryString() ?? 'default');
+
+        $data = Cache::remember($cacheKey, now()->addMinutes(5), function () use ($request) {
+            return $this->queryRecipes($request);
+        });
+
+        return response()->json([
+            'data'  => $data,
+            'total' => $data->count(),
         ]);
+    }
+
+    private function queryRecipes(Request $request)
+    {
+        $query = Recipe::query();
+
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        if ($difficulty = $request->input('difficulty')) {
+            if (in_array($difficulty, ['beginner', 'intermediate', 'advanced'])) {
+                $query->where('difficulty', $difficulty);
+            }
+        }
+
+        match ($request->input('sort')) {
+            'oldest'        => $query->oldest(),
+            'calories_asc'  => $query->orderBy('calories'),
+            'calories_desc' => $query->orderByDesc('calories'),
+            default         => $query->latest(),
+        };
+
+        $limit = min((int) ($request->input('limit', 12)), 100);
+        $query->limit($limit);
+
+        return $query->get();
     }
 }

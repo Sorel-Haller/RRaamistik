@@ -1,196 +1,75 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-
-type Ingredient = {
-    amount: string;
-    name: string;
-};
-
-type Instruction = {
-    title: string;
-    description: string;
-};
+import { Flame } from 'lucide-vue-next';
 
 type Recipe = {
     id: number;
     title: string;
     description: string;
-    cooking_time: number;
-    prep_time?: number;
+    instructions: string;
+    calories: number | null;
     difficulty: string;
     image?: string;
-    servings?: number;
-
-    calories?: number;
-    protein?: string;
-    carbs?: string;
-    fat?: string;
-
-    ingredients?: Ingredient[];
-    instructions?: Instruction[];
+    created_at: string;
 };
 
-const { recipe } = defineProps<{
-    recipe: Recipe;
-}>();
+const { recipe } = defineProps<{ recipe: Recipe }>();
+
+const steps = recipe.instructions
+    .split('\n')
+    .map(s => s.trim())
+    .filter(Boolean);
+
+const difficultyStyle: Record<string, string> = {
+    beginner:   'bg-emerald-50 text-emerald-600',
+    intermediate: 'bg-amber-50   text-amber-600',
+    advanced:   'bg-red-50     text-red-600',
+};
 </script>
 
 <template>
     <Head :title="recipe.title" />
     <AppLayout>
-        <div class="p-6 flex flex-col gap-6">
-            <div class="flex items-center justify-between">
-                <Link
-                    href="/recipes"
-                    class="text-sm text-gray-500 hover:text-black"
-                >
-                    ← Back to Recipes
-                </Link>
-            </div>
-            <div
-                class="border rounded-2xl bg-white dark:bg-neutral-900 overflow-hidden">
-                <div class="p-6 border-b grid lg:grid-cols-[380px_1fr] gap-8 items-center"                >
-                    <div>
-                        <img
-                            :src="recipe.image || 'https://picsum.photos/800/500'"
-                            class="w-full h-[250px] object-cover rounded-2xl"
-                        />
-                    </div>
-                    <div class="space-y-5">
-                        <div class="flex flex-wrap items-center gap-4">
-                            <span
-                                class="px-3 py-1 rounded-full text-sm font-semibold bg-orange-100 text-orange-500 uppercase"
-                            >
-                                {{ recipe.difficulty }}
-                            </span>
-                            <span class="text-sm text-gray-500">
-                                ⏱ {{ recipe.cooking_time }} mins
-                            </span>
-                            <span class="text-sm text-gray-500">
-                                👥 {{ recipe.servings || 4 }} Servings
-                            </span>
-                        </div>
-                        <h1 class="text-4xl font-bold leading-tight">
-                            {{ recipe.title }}
-                        </h1>
-                        <p class="text-gray-500 leading-relaxed text-lg">
-                            {{ recipe.description }}
-                        </p>
-                        <div
-                            class="grid grid-cols-2 md:grid-cols-4 gap-6 pt-4 border-t">
-                            <div>
-                                <p class="text-xs font-semibold text-gray-400 uppercase">
-                                    Calories
-                                </p>
-                                <p class="text-2xl font-bold">
-                                    {{ recipe.calories || 0 }} kcal
-                                </p>
-                            </div>
-                            <div>
-                                <p class="text-xs font-semibold text-gray-400 uppercase">
-                                    Protein
-                                </p>
-                                <p class="text-2xl font-bold">
-                                    {{ recipe.protein || '0g' }}
-                                </p>
-                            </div>
-                            <div>
-                                <p class="text-xs font-semibold text-gray-400 uppercase">
-                                    Carbs
-                                </p>
-                                <p class="text-2xl font-bold">
-                                    {{ recipe.carbs || '0g' }}
-                                </p>
-                            </div>
-                            <div>
-                                <p class="text-xs font-semibold text-gray-400 uppercase">
-                                    Fat
-                                </p>
-                                <p class="text-2xl font-bold">
-                                    {{ recipe.fat || '0g' }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-6 grid lg:grid-cols-2 gap-6">
-                    <div
-                        class="border rounded-2xl p-6"
-                    >
-                        <div class="flex items-center justify-between mb-5">
-                            <h2 class="text-2xl font-bold">
-                                Ingredients
-                            </h2>
-                        </div>
-                        <div
-                            v-if="recipe.ingredients?.length"
-                            class="space-y-4">
-                            <div
-                                v-for="(ingredient, index) in recipe.ingredients"
-                                :key="index"
-                                class="flex items-start gap-4 border-b pb-4 last:border-b-0"
-                            >
-                                <input
-                                    type="checkbox"
-                                    class="mt-1 rounded"
-                                />
-                                <div class="flex gap-2 text-base">
-                                    <span class="font-semibold">
-                                        {{ ingredient.amount }}
-                                    </span>
-
-                                    <span class="text-gray-600">
-                                        {{ ingredient.name }}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div
-                            v-else
-                            class="text-gray-400"
+        <div class="p-6 flex flex-col gap-6 max-w-3xl mx-auto">
+            <Link href="/recipes" class="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                ← Back to Recipes
+            </Link>
+            <div class="bg-background border border-border rounded-2xl overflow-hidden shadow-sm">
+                <img
+                    :src="recipe.image || `https://picsum.photos/seed/${recipe.id}/800/400`"
+                    :alt="recipe.title"
+                    class="w-full h-64 object-cover"
+                />
+                <div class="p-6 flex flex-col gap-3">
+                    <h1 class="text-3xl font-bold text-foreground leading-tight">{{ recipe.title }}</h1>
+                    <p class="text-muted-foreground leading-relaxed">{{ recipe.description }}</p>
+                    <div class="flex items-center gap-4 pt-4 border-t border-border mt-2 flex-wrap">
+                        <span
+                            class="text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wide"
+                            :class="difficultyStyle[recipe.difficulty] ?? 'bg-muted text-muted-foreground'"
                         >
-                            No ingredients added
+                            {{ recipe.difficulty }}
+                        </span>
+                        <div v-if="recipe.calories" class="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                            <Flame :size="16" class="text-orange-500" />
+                            {{ recipe.calories }} kcal
                         </div>
+                        <span class="text-sm text-muted-foreground ml-auto">
+                            Added {{ new Date(recipe.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) }}
+                        </span>
                     </div>
-                    <div
-                        class="border rounded-2xl p-6"
-                    >
-                        <h2 class="text-2xl font-bold mb-5">
-                            Instructions
-                        </h2>
-                        <div
-                            v-if="recipe.instructions?.length"
-                            class="space-y-6">
-
-                            <div
-                                v-for="(step, index) in recipe.instructions"
-                                :key="index"
-                                class="flex gap-4">
-                                <div
-                                    class="w-9 h-9 rounded-full border flex items-center justify-center text-sm font-semibold text-indigo-600 shrink-0">
-                                    {{ index + 1 }}
-                                </div>
-                                <div class="space-y-1">
-                                    <h3 class="font-semibold text-lg">
-                                        {{ step.title }}
-                                    </h3>
-                                    <p class="text-gray-500 leading-relaxed">
-                                        {{ step.description }}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div
-                            v-else
-                            class="text-gray-400">
-                            No instructions added
-                        </div>
-                    </div>
-
                 </div>
             </div>
-
+            <div class="bg-background border border-border rounded-2xl p-6 shadow-sm">
+                <h2 class="text-xl font-bold text-foreground mb-5">Instructions</h2>
+                <ol v-if="steps.length" class="flex flex-col gap-4">
+                    <li v-for="(step, i) in steps" :key="i" class="flex gap-4">
+                        <p class="text-sm text-foreground leading-relaxed pt-0.5">{{ step }}</p>
+                    </li>
+                </ol>
+                <p v-else class="text-sm text-muted-foreground">No instructions provided.</p>
+            </div>
         </div>
     </AppLayout>
 </template>

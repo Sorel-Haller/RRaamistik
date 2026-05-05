@@ -20,26 +20,12 @@ class RecipeFactory extends Factory
             'title' => $this->faker->sentence(3),
             'description' => $this->faker->paragraph(),
             'cooking_time' => $this->faker->numberBetween(15, 90),
-            'prep_time' => $this->faker->numberBetween(5, 30),
             'difficulty' => $this->faker->randomElement(['beginner', 'intermediate', 'advanced']),
-            'image' => 'https://picsum.photos/800/500?' . rand(1, 1000),
-            'servings' => $this->faker->numberBetween(1, 6),
-            
+            'image' => 'https://picsum.photos/seed/' . rand(1, 1000) . '/800/500',
             'calories' => $this->faker->numberBetween(200, 800),
-            'protein' => $this->faker->numberBetween(10, 50) . 'g',
-            'carbs' => $this->faker->numberBetween(20, 100) . 'g',
-            'fat' => $this->faker->numberBetween(5, 40) . 'g',
-
-            'ingredients' => collect(range(1, rand(3, 8)))->map(fn() => [
-                'amount' => rand(1, 500) . $this->faker->randomElement(['g', 'ml', ' pcs', ' units']),
-                'name' => $this->faker->word()
-            ])->toArray(),
-
-            'instructions' => collect(range(1, rand(2, 5)))->map(fn($i) => [
-                'title' => 'Samm ' . $i,
-                'description' => $this->faker->sentence(10)
-            ])->toArray(),
+            'instructions' => collect(range(1, rand(3, 6)))
+                ->map(fn($i) => "Step $i: " . $this->faker->sentence(12))
+                ->implode("\n"),
         ];
     }
-
 }

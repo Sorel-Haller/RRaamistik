@@ -9,7 +9,6 @@ import PaginationItem from '@/components/ui/pagination/PaginationItem.vue';
 import PaginationLast from '@/components/ui/pagination/PaginationLast.vue';
 import PaginationNext from '@/components/ui/pagination/PaginationNext.vue';
 import PaginationPrevious from '@/components/ui/pagination/PaginationPrevious.vue';
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { destroy, edit, show, create, index } from '@/routes/posts';
 import { type BreadcrumbItem } from '@/types';

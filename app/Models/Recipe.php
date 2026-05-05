@@ -2,20 +2,22 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Recipe extends Model
 {
+    use HasFactory;
+
     protected $table = 'recipes';
 
     protected $fillable = [
-        'title', 'description', 'cooking_time', 'prep_time', 'difficulty', 
-        'image', 'servings', 'calories', 'protein', 'carbs', 'fat', 
-        'ingredients', 'instructions'
-    ];
-
-    protected $casts = [
-        'ingredients' => 'array',
-        'instructions' => 'array',
+        'title',
+        'image',
+        'description',
+        'cooking_time',
+        'difficulty',
+        'instructions',
+        'calories',
     ];
 }

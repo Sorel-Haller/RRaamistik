@@ -18,8 +18,8 @@ return new class extends Migration
         });
     }
 
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('reviews');
     }
 };

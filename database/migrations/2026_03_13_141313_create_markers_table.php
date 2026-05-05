@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('markers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->double('latitude');
-            $table->double('longitude');
+            $table->decimal('lat', 11, 8);
+            $table->decimal('lng', 11, 8);
             $table->text('description')->nullable();
-            $table->timestamps();
-        });
+            $table->timestamp('added')->nullable();
+            $table->timestamp('edited')->nullable();
+});
     }
 
     /**

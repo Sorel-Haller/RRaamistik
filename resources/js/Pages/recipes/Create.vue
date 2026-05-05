@@ -7,314 +7,123 @@ const form = ref({
     title: '',
     image: '',
     description: '',
-    difficulty: '',
-    cooking_time: '',
-    prep_time: '',
-    servings: '',
+    instructions: '',
     calories: '',
-    protein: '',
-    carbs: '',
-    fat: '',
-    ingredients: [
-        {
-            amount: '',
-            name: '',
-        },
-    ],
-    instructions: [
-        {
-            title: '',
-            description: '',
-        },
-    ],
+    difficulty: 'beginner',
 });
 
-const addIngredient = () => {
-    form.value.ingredients.push({
-        amount: '',
-        name: '',
-    });
-};
-
-const addStep = () => {
-    form.value.instructions.push({
-        title: '',
-        description: '',
-    });
-};
+const errors = ref<Record<string, string>>({});
 
 const submit = () => {
+    errors.value = {};
     router.post('/recipes', form.value, {
-        onSuccess: () => {
-            console.log('Recipe created successfully');
-        },
+        onError: (e) => { errors.value = e; },
     });
 };
 </script>
 
 <template>
-    <Head title="Create Recipe" />
-
+    <Head title="Add Recipe" />
     <AppLayout>
-        <div class="p-6 flex flex-col gap-6">
-
-            <!-- Header -->
-            <div class="flex items-center justify-between">
-                <div>
-                    <Link
-                        href="/recipes"
-                        class="text-sm text-gray-500 hover:text-black"
-                    >
-                        ← Back
-                    </Link>
-
-                    <h1 class="text-3xl font-bold mt-2">
-                        Create New Recipe
-                    </h1>
-                </div>
-
-                <button
-                    type="button"
-                    @click="submit"
-                    class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-medium"
-                >
-                    Publish Recipe
-                </button>
+        <div class="p-6 max-w-2xl mx-auto flex flex-col gap-6">
+            <div>
+                <Link href="/recipes" class="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    ← Back to Recipes
+                </Link>
+                <h1 class="text-2xl font-bold text-foreground mt-2">Add New Recipe</h1>
             </div>
-
-            <!-- Main Recipe Info -->
-            <div
-                class="border border-gray-200 rounded-2xl bg-white dark:bg-neutral-900 p-8 grid lg:grid-cols-2 gap-10"
-            >
-                <!-- Image URL + Preview -->
-                <div>
-                    <p class="font-semibold text-gray-700 dark:text-gray-200 mb-4">
-                        Recipe Image URL
-                    </p>
-
+            <div class="bg-background border border-border rounded-2xl p-6 shadow-sm flex flex-col gap-5">
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-sm font-semibold text-foreground">
+                        Title <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        v-model="form.title"
+                        placeholder="e.g. Creamy Tuscan Pasta"
+                        class="border border-border rounded-lg px-3 py-2.5 text-sm bg-muted placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+                    />
+                    <p v-if="errors.title" class="text-xs text-red-500">{{ errors.title }}</p>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-sm font-semibold text-foreground">Image URL</label>
                     <input
                         v-model="form.image"
-                        type="text"
-                        placeholder="https://example.com/recipe-image.jpg"
-                        class="w-full border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none shadow-sm"
+                        placeholder="https://example.com/image.jpg"
+                        class="border border-border rounded-lg px-3 py-2.5 text-sm bg-muted placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
                     />
-
-                    <div
-                        class="mt-6 border border-gray-200 dark:border-gray-700 rounded-3xl h-80 flex items-center justify-center bg-gray-50 dark:bg-neutral-800 overflow-hidden"
-                    >
-                        <img
-                            v-if="form.image"
-                            :src="form.image"
-                            alt="Recipe Preview"
-                            @error="form.image = ''"
-                            class="w-full h-full object-cover rounded-3xl"
+                    <div v-if="form.image" class="mt-1 rounded-xl overflow-hidden border border-border h-40 bg-muted">
+                        <img :src="form.image" class="w-full h-full object-cover" @error="($event.target as HTMLImageElement).style.display='none'" />
+                    </div>
+                    <p v-if="errors.image" class="text-xs text-red-500">{{ errors.image }}</p>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-sm font-semibold text-foreground">
+                        Description <span class="text-red-500">*</span>
+                    </label>
+                    <textarea
+                        v-model="form.description"
+                        placeholder="A short summary of the recipe..."
+                        rows="3"
+                        class="border border-border rounded-lg px-3 py-2.5 text-sm bg-muted placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition resize-none"
+                    />
+                    <p v-if="errors.description" class="text-xs text-red-500">{{ errors.description }}</p>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-sm font-semibold text-foreground">
+                        Instructions <span class="text-red-500">*</span>
+                    </label>
+                    <p class="text-xs text-muted-foreground -mt-0.5">One step per line.</p>
+                    <textarea
+                        v-model="form.instructions"
+                        placeholder="Step 1: Preheat oven to 200°C&#10;Step 2: Mix the ingredients&#10;Step 3: Bake for 25 minutes"
+                        rows="6"
+                        class="border border-border rounded-lg px-3 py-2.5 text-sm bg-muted placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition resize-none"
+                    />
+                    <p v-if="errors.instructions" class="text-xs text-red-500">{{ errors.instructions }}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-sm font-semibold text-foreground">Calories (kcal)</label>
+                        <input
+                            v-model="form.calories"
+                            type="number"
+                            min="0"
+                            placeholder="e.g. 450"
+                            class="border border-border rounded-lg px-3 py-2.5 text-sm bg-muted placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
                         />
-
-                        <span
-                            v-else
-                            class="text-gray-500 dark:text-gray-400 font-medium"
+                        <p v-if="errors.calories" class="text-xs text-red-500">{{ errors.calories }}</p>
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-sm font-semibold text-foreground">
+                            Difficulty <span class="text-red-500">*</span>
+                        </label>
+                        <select
+                            v-model="form.difficulty"
+                            class="border border-border rounded-lg px-3 py-2.5 text-sm bg-muted text-foreground outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
                         >
-                            Image preview will appear here
-                        </span>
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                        </select>
+                        <p v-if="errors.difficulty" class="text-xs text-red-500">{{ errors.difficulty }}</p>
                     </div>
                 </div>
-
-                <!-- Form Fields -->
-                <div class="space-y-6">
-                    <div>
-                        <label
-                            class="block font-semibold text-gray-700 dark:text-gray-200 mb-2"
-                        >
-                            Recipe Title
-                        </label>
-
-                        <input
-                            v-model="form.title"
-                            class="w-full border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none shadow-sm"
-                        />
-                    </div>
-
-                    <div>
-                        <label
-                            class="block font-semibold text-gray-700 dark:text-gray-200 mb-2"
-                        >
-                            Description
-                        </label>
-
-                        <textarea
-                            v-model="form.description"
-                            placeholder="Write a short, appetizing summary of the recipe..."
-                            class="w-full border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 h-32 focus:ring-2 focus:ring-indigo-500 outline-none shadow-sm"
-                        />
-                    </div>
-
-                    <!-- Meta Info -->
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 justify-end items-end">
-                        <div>
-                            <label class="block text-sm font-semibold mb-2">
-                                Difficulty
-                            </label>
-
-                            <select
-                                v-model="form.difficulty"
-                                class="w-full border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-3 text-gray-500"
-                            >
-                                <option value="" disabled>Select...</option>
-                                <option value="beginner">Beginner</option>
-                                <option value="intermediate">Intermediate</option>
-                                <option value="advanced">Advanced</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-semibold mb-2">
-                                Cooking Time
-                            </label>
-
-                            <input
-                                v-model="form.cooking_time"
-                                placeholder="e.g. 30 mins"
-                                class="w-full border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-3"
-                            />
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-semibold mb-2">
-                                Prep Time
-                            </label>
-
-                            <input
-                                v-model="form.prep_time"
-                                placeholder="e.g. 15 mins"
-                                class="w-full border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-3"
-                            />
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-semibold mb-2">
-                                Servings
-                            </label>
-
-                            <input
-                                v-model="form.servings"
-                                placeholder="e.g. 4"
-                                class="w-full border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-3"
-                            />
-                        </div>
-                    </div>
-
-                    <!-- Nutrition -->
-                    <div>
-                        <label
-                            class="block font-semibold text-gray-700 dark:text-gray-200 mb-4"
-                        >
-                            Nutritional Information (Optional)
-                        </label>
-
-                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                            <input
-                                v-model="form.calories"
-                                placeholder="Calories (e.g. 450 kcal)"
-                                class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3"
-                            />
-
-                            <input
-                                v-model="form.protein"
-                                placeholder="Protein (e.g. 38g)"
-                                class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3"
-                            />
-
-                            <input
-                                v-model="form.carbs"
-                                placeholder="Carbs (e.g. 12g)"
-                                class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3"
-                            />
-
-                            <input
-                                v-model="form.fat"
-                                placeholder="Fat (e.g. 28g)"
-                                class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3"
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Ingredients + Instructions -->
-            <div class="grid lg:grid-cols-2 gap-6">
-
-                <!-- Ingredients -->
-                <div
-                    class="border rounded-2xl bg-white dark:bg-neutral-900 p-6"
-                >
-                    <h2 class="text-xl font-bold mb-4">
-                        Ingredients
-                    </h2>
-
-                    <div
-                        v-for="(ingredient, index) in form.ingredients"
-                        :key="index"
-                        class="grid grid-cols-2 gap-3 mb-3"
+                <div class="flex items-center gap-3 pt-2 border-t border-border">
+                    <Link
+                        href="/recipes"
+                        class="px-4 py-2 border border-border rounded-lg text-sm font-medium hover:bg-muted transition-colors"
                     >
-                        <input
-                            v-model="ingredient.amount"
-                            placeholder="Amount"
-                            class="border border-gray-300 dark:border-gray-700 rounded-xl px-4 py-3"
-                        />
-
-                        <input
-                            v-model="ingredient.name"
-                            placeholder="Ingredient name"
-                            class="border border-gray-300 dark:border-gray-700 rounded-xl px-4 py-3"
-                        />
-                    </div>
-
+                        Cancel
+                    </Link>
                     <button
-                        type="button"
-                        @click="addIngredient"
-                        class="w-full border border-dashed rounded-xl py-3 text-white bg-green-600 hover:bg-green-700"
+                        @click="submit"
+                        class="flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
                     >
-                        + Add Ingredient
-                    </button>
-                </div>
-
-                <!-- Instructions -->
-                <div
-                    class="border rounded-2xl bg-white dark:bg-neutral-900 p-6"
-                >
-                    <h2 class="text-xl font-bold mb-4">
-                        Instructions
-                    </h2>
-
-                    <div
-                        v-for="(step, index) in form.instructions"
-                        :key="index"
-                        class="space-y-3 mb-5"
-                    >
-                        <input
-                            v-model="step.title"
-                            :placeholder="`Step ${index + 1} title`"
-                            class="w-full border border-gray-300 dark:border-gray-700 rounded-xl px-4 py-3"
-                        />
-
-                        <textarea
-                            v-model="step.description"
-                            placeholder="Describe this step"
-                            class="w-full border border-gray-300 dark:border-gray-700 rounded-xl px-4 py-3 h-24"
-                        />
-                    </div>
-
-                    <button
-                        type="button"
-                        @click="addStep"
-                        class="w-full border border-dashed rounded-xl py-3 text-white bg-green-600 hover:bg-green-700"
-                    >
-                        + Add Next Step
+                        Publish Recipe
                     </button>
                 </div>
 
             </div>
-
         </div>
     </AppLayout>
 </template>
