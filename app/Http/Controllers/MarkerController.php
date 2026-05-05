@@ -31,7 +31,7 @@ class MarkerController extends Controller
             'edited'      => now(),
         ]);
 
-        return redirect()->route('dashboard')->with('success', 'Marker updated');
+        return back()->with('success', 'Marker updated');
     }
 
     public function destroy(Marker $marker)

@@ -53,11 +53,9 @@ function submit() {
     if (modal.value?.mode === 'edit') {
         router.put(`/markers/${modal.value.marker.id}`, form.value, {
             preserveScroll: true,
-            onSuccess: (page) => {
-                closeModal();
-                markers.value = page.props.markers;
-                renderMarkers();
-            },
+            preserveState: true,
+            onSuccess: () => closeModal(),
+            onFinish: () => router.reload({ only: ['markers'] }),
         });
     }
 }
