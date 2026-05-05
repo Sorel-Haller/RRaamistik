@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { router } from '@inertiajs/vue3';
 import { onMounted, onBeforeUnmount, ref, watch } from 'vue';
-import { Pencil, Trash2, Plus, X, Check } from 'lucide-vue-next';
+import { X, Check } from 'lucide-vue-next';
 
 type Marker = {
     id: number;
@@ -14,6 +14,8 @@ type Marker = {
 };
 
 const props = defineProps<{ markers: Marker[] }>();
+
+const markers = ref<Marker[]>([...props.markers]);
 
 type Modal = { mode: 'add'; lat: number; lng: number }
            | { mode: 'edit'; marker: Marker }
@@ -38,21 +40,38 @@ function closeModal() { modal.value = null; }
 
 function submit() {
     if (!form.value.name.trim()) return;
-
     if (modal.value?.mode === 'add') {
-        router.post('/markers', form.value, { preserveScroll: true, onSuccess: closeModal });
-    } else if (modal.value?.mode === 'edit') {
+        router.post('/markers', form.value, {
+            preserveScroll: true,
+            onSuccess: (page) => {
+                closeModal();
+                markers.value = page.props.markers;
+                renderMarkers();
+            },
+        });
+    }
+    if (modal.value?.mode === 'edit') {
         router.put(`/markers/${modal.value.marker.id}`, form.value, {
             preserveScroll: true,
-            onSuccess: () => closeModal(),
-            onFinish: () => router.reload({ only: ['markers'] })
+            onSuccess: (page) => {
+                closeModal();
+                markers.value = page.props.markers;
+                renderMarkers();
+            },
         });
     }
 }
 
 function destroy(id: number) {
     if (!confirm('Delete this marker?')) return;
-    router.delete(`/markers/${id}`, { preserveScroll: true });
+
+    router.delete(`/markers/${id}`, {
+        preserveScroll: true,
+        onSuccess: (page) => {
+            markers.value = page.props.markers;
+            renderMarkers();
+        },
+    });
 }
 
 let L: typeof import('leaflet') | null = null;
@@ -86,26 +105,32 @@ async function initMap() {
 function renderMarkers() {
     if (!L || !map) return;
 
-    for (const [id, lm] of leafletMarkers) {
-        if (!props.markers.find(m => m.id === id)) {
-            lm.remove();
-            leafletMarkers.delete(id);
-        }
+    for (const lm of leafletMarkers.values()) {
+        lm.remove();
     }
-    for (const m of props.markers) {
-        if (leafletMarkers.has(m.id)) continue;
+    leafletMarkers.clear();
 
+    for (const m of markers.value) {
         const lm = L!.marker([m.lat, m.lng])
             .addTo(map!)
             .bindPopup(buildPopup(m), { minWidth: 200 });
 
         lm.on('popupopen', () => {
             setTimeout(() => {
-                document.getElementById(`edit-${m.id}`)?.addEventListener('click', () => { lm.closePopup(); openEdit(m); });
-                document.getElementById(`del-${m.id}`)?.addEventListener('click', () => { lm.closePopup(); destroy(m.id); });
+                document
+                    .getElementById(`edit-${m.id}`)
+                    ?.addEventListener('click', () => {
+                        lm.closePopup();
+                        openEdit(m);
+                    });
+                document
+                    .getElementById(`del-${m.id}`)
+                    ?.addEventListener('click', () => {
+                        lm.closePopup();
+                        destroy(m.id);
+                    });
             }, 50);
         });
-
         leafletMarkers.set(m.id, lm);
     }
 }
@@ -123,7 +148,14 @@ function buildPopup(m: Marker): string {
         </div>`;
 }
 
-watch(() => props.markers, renderMarkers, { deep: true });
+watch(
+    () => props.markers,
+    (newMarkers) => {
+        markers.value = [...newMarkers];
+        renderMarkers();
+    },
+    { deep: true }
+);
 
 onMounted(async () => {
     if (!document.getElementById('leaflet-css')) {
