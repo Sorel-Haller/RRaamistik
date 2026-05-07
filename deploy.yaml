@@ -28,6 +28,8 @@ tasks:
     - 'deploy:prepare'
     - 'deploy:vendors'
   #  - 'npm:production'
+    - 'deploy:update_code'
+    - 'deploy:shared'
     - 'artisan:storage:link'
     - 'artisan:optimize:clear'
     - 'artisan:optimize'
