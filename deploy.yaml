@@ -12,6 +12,7 @@ hosts:
     remote_user: virt137756
     forward_agent: true
     deploy_path: '~/domeenid/www.ta24haller.itmajakas.ee/raamistikud'
+    update_code_strategy: upload
 
 
 tasks:

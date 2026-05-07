@@ -2,6 +2,9 @@ name: Production deploy
 
 on: workflow_dispatch
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 concurrency: production_environment
 
 jobs:
@@ -14,5 +17,5 @@ jobs:
         uses: deployphp/action@v1
         with:
           deployer-version: "7.5.12"
-          dep: deploy
+          dep: deploy -vvv
           private-key: ${{ secrets.PRIVATE_KEY }}
