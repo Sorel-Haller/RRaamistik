@@ -1,4 +1,4 @@
-import: 
+import:
   - recipe/laravel.php
 
 config:
@@ -13,30 +13,14 @@ hosts:
     forward_agent: true
     deploy_path: '~/domeenid/www.ta24haller.itmajakas.ee/raamistikud'
 
-
 tasks:
   npm:production:
-  - run: 'cd {{release_path}} && npm install'
-  - run: 'cd {{release_path}} && npx vite build'
-
+    - run: 'cd {{release_path}} && npm install'
+    - run: 'cd {{release_path}} && npx vite build'
 
   opcache:clear:
     - run: killall php84-cgi || true
 
-  deploy:
-    - 'deploy:prepare'
-    - 'deploy:release'
-    - 'deploy:update_code'
-    - 'deploy:shared'
-    - 'deploy:vendors'
-    - 'artisan:storage:link'
-    - 'artisan:optimize:clear'
-    - 'artisan:optimize'
-    - 'deploy:publish'
-
 after:
   deploy:failed: deploy:unlock
-
-before:
   deploy:success: opcache:clear
-
