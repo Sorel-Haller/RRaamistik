@@ -6,7 +6,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, Store } from 'lucide-vue-next';
+import { BookOpen, Folder, LayoutGrid, ChefHat, Store, Clapperboard  } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
@@ -28,7 +28,12 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Recipes',
         href: '/recipes',
-        icon: BookOpen,
+        icon: ChefHat,
+    },
+    {
+        title: 'Recipes',
+        href: '/api',
+        icon: Clapperboard,
     },
 
 ];
