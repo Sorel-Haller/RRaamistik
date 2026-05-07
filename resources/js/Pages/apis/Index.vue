@@ -98,18 +98,12 @@ const filteredMovies = computed(() => {
 
     <AppLayout>
         <div class="p-6 flex flex-col gap-6">
-
-            <!-- HEADER -->
             <div>
                 <h1 class="text-2xl font-bold text-foreground">
                     API Movies
                 </h1>
             </div>
-
-            <!-- FILTERS -->
             <div class="flex flex-wrap items-center gap-3 bg-background border border-border p-4 rounded-xl shadow-sm">
-
-                <!-- SEARCH -->
                 <div class="flex items-center gap-2 bg-muted border border-border rounded-lg px-3 py-2 w-60 text-muted-foreground">
                     <Search :size="16" class="shrink-0" />
 
@@ -119,8 +113,6 @@ const filteredMovies = computed(() => {
                         class="bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none w-full"
                     />
                 </div>
-
-                <!-- SORT -->
                 <div class="flex items-center gap-2">
                     <span class="text-sm font-medium text-muted-foreground">
                         Sort:
@@ -144,24 +136,18 @@ const filteredMovies = computed(() => {
                     Open API
                 </a>
             </div>
-
-            <!-- LOADING -->
             <div
                 v-if="loading"
                 class="text-muted-foreground"
             >
                 Loading movies...
             </div>
-
-            <!-- ERROR -->
             <div
                 v-else-if="error"
                 class="text-red-500"
             >
                 {{ error }}
             </div>
-
-            <!-- GRID -->
             <div
                 v-else
                 class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
