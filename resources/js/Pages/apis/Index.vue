@@ -22,14 +22,14 @@ const error = ref('');
 const search = ref('');
 const sort = ref('latest');
 
-const FRIEND_API =
-    'https://raamistikud.ta24armus.itmajakas.ee/api/my-favorite-subjects';
+const OTHER_API =
+    'https://ralfiharjutus.ta24siim.itmajakas.ee/api/movies';
 
 async function fetchMovies() {
     loading.value = true;
 
     try {
-        const res = await fetch(FRIEND_API);
+        const res = await fetch(OTHER_API);
         const json = await res.json();
 
         movies.value = (json.data ?? json).map((m: any) => ({
@@ -137,7 +137,7 @@ const filteredMovies = computed(() => {
                 </div>
 
                 <a
-                    :href="FRIEND_API"
+                    :href="OTHER_API"
                     target="_blank"
                     class="ml-auto text-sm text-muted-foreground hover:text-foreground"
                 >
