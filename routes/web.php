@@ -23,57 +23,104 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/dashboard', DashboardController::class)
         ->name('dashboard');
-    
+
     Route::get('/weather/search', [WeatherController::class, 'search'])
         ->name('weather.search');
 
+    /*
+    |--------------------------------------------------------------------------
+    | MARKERS
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/markers', [MarkerController::class, 'index'])
         ->name('markers.index');
+
     Route::post('/markers', [MarkerController::class, 'store'])
         ->name('markers.store');
+
     Route::put('/markers/{marker}', [MarkerController::class, 'update'])
         ->name('markers.update');
+
     Route::delete('/markers/{marker}', [MarkerController::class, 'destroy'])
         ->name('markers.destroy');
 
+    /*
+    |--------------------------------------------------------------------------
+    | POSTS
+    |--------------------------------------------------------------------------
+    */
 
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])
         ->name('posts.destroy');
+
     Route::get('/posts/{post}/edit', [PostController::class, 'edit'])
         ->name('posts.edit');
+
     Route::post('/add-comment/{post}', [CommentController::class, 'store'])
         ->name('comments.add');
 
+    /*
+    |--------------------------------------------------------------------------
+    | PRODUCTS + CART
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/products', [ProductController::class, 'index'])
         ->name('products.index');
+
     Route::delete('/products/{products}', [ProductController::class, 'destroy'])
         ->name('products.destroy');
 
     Route::get('/cart', [CartController::class, 'index'])
         ->name('cart.index');
+
     Route::post('/cart/add', [CartController::class, 'add'])
         ->name('cart.add');
+
     Route::patch('/cart/{productId}', [CartController::class, 'update'])
         ->name('cart.update');
+
     Route::delete('/cart/{productId}', [CartController::class, 'remove'])
         ->name('cart.remove');
+
     Route::get('/checkout', [OrderController::class, 'checkout'])
         ->name('cart.checkout');
+
     Route::post('/cart/pay', [CartController::class, 'pay'])
         ->name('cart.pay');
+
     Route::get('/products/success/{order}', [CartController::class, 'success'])
         ->name('checkout.success');
 
-    Route::get('/recipes',          [RecipeController::class, 'index'])
+    /*
+    |--------------------------------------------------------------------------
+    | RECIPES
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/recipes', [RecipeController::class, 'index'])
         ->name('recipes.index');
-    Route::get('/recipes/create',   [RecipeController::class, 'create'])
+
+    Route::get('/recipes/create', [RecipeController::class, 'create'])
         ->name('recipes.create');
-    Route::post('/recipes',         [RecipeController::class, 'store'])
+
+    Route::post('/recipes', [RecipeController::class, 'store'])
         ->name('recipes.store');
+
     Route::get('/recipes/{recipe}', [RecipeController::class, 'show'])
         ->name('recipes.show');
-    
-    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | API PAGE
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/apis', function () {
+        return Inertia::render('apis/Index');
+    })->name('apis.index');
+});
 
 Route::get('/mailable', function () {
 

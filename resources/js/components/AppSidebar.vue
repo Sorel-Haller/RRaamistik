@@ -31,8 +31,8 @@ const mainNavItems: NavItem[] = [
         icon: ChefHat,
     },
     {
-        title: 'Recipes',
-        href: '/api',
+        title: 'API',
+        href: '/apis',
         icon: Clapperboard,
     },
 

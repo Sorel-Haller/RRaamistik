@@ -1,7 +1,9 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\RecipeController;
+use App\Models\Recipe;
 
-Route::get('/recipes', [RecipeController::class, 'apiIndex'])
-    ->name('api.recipes.index');
+Route::get('/recipes', function () {
+    return Recipe::latest()->get();
+});
