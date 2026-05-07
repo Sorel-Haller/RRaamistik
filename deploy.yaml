@@ -25,10 +25,10 @@ tasks:
 
   deploy:
     - 'deploy:prepare'
-    - 'deploy:vendors'
-  #  - 'npm:production'
+    - 'deploy:release'
     - 'deploy:update_code'
     - 'deploy:shared'
+    - 'deploy:vendors'
     - 'artisan:storage:link'
     - 'artisan:optimize:clear'
     - 'artisan:optimize'
